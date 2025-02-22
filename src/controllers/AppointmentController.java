@@ -1,10 +1,10 @@
-package hospital.management.system.controllers;
+package controllers;
 
-import hospital.management.system.models.Appointment;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import models.Appointment;
 
 public class AppointmentController {
     private List<Appointment> appointments;

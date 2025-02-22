@@ -1,6 +1,6 @@
-package hospital.management.system.controllers;
+package controllers;
 
-import hospital.management.system.models.Patient;
+import models.Patient;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package hospital.management.system.models;
+package models;
 
 import java.time.LocalDateTime;
 
@@ -19,4 +19,5 @@ public class Appointment {
     public String getAppointmentID() { return appointmentID; }
     public LocalDateTime getDate() { return date; }
     public void setStatus(String status) { this.status = status; }
+    public String getStatus() { return status; }
 }

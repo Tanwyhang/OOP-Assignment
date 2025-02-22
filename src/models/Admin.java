@@ -1,4 +1,4 @@
-package hospital.management.system.models;
+package models;
 
 public class Admin {
     private String userID;
@@ -11,16 +11,9 @@ public class Admin {
         this.password = password;
     }
 
-    public boolean login(String userID, String password) {
-        return this.userID.equals(userID) && this.password.equals(password);
-    }
-
-    public void logout() {
-        System.out.println("Admin logged out.");
-    }
-
-    public boolean changePassword(String newPassword) {
-        this.password = newPassword;
-        return true;
-    }
+    // Getters and Setters
+    public String getUserID() { return userID; }
+    public void setUserID(String userID) { this.userID = userID; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }

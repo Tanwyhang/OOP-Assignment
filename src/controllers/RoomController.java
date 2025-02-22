@@ -1,9 +1,9 @@
-package hospital.management.system.controllers;
+package controllers;
 
-import hospital.management.system.models.Room;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import models.Room;
 
 public class RoomController {
     private List<Room> rooms;

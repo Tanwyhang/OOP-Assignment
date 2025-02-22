@@ -1,4 +1,4 @@
-package hospital.management.system.models;
+package models;
 
 public class Room {
     private String roomID;
@@ -17,4 +17,5 @@ public class Room {
     public String getRoomID() { return roomID; }
     public String getType() { return type; }
     public void setStatus(String status) { this.status = status; }
+    public String getStatus() { return status; }
 }

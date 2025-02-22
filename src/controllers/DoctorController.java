@@ -1,9 +1,9 @@
-package hospital.management.system.controllers;
+package controllers;
 
-import hospital.management.system.models.Doctor;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import models.Doctor;
 
 public class DoctorController {
     private List<Doctor> doctors;

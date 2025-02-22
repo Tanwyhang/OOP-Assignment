@@ -1,9 +1,10 @@
-package hospital.management.system.controllers;
+package controllers;
 
-import hospital.management.system.models.MedicalRecord;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import models.MedicalRecord;
 import java.util.List;
 
 public class MedicalRecordController {

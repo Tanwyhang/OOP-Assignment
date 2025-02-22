@@ -1,4 +1,4 @@
-package hospital.management.system.models;
+package models;
 
 public class Person {
     private String personID;

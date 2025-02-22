@@ -1,4 +1,4 @@
-package hospital.management.system.models;
+package models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,4 +28,8 @@ public class MedicalRecord {
     public void addDiagnosis(String diagnosis) { diagnoses.add(diagnosis); }
     public void addPrescription(String prescription) { prescriptions.add(prescription); }
     public void addTreatment(String treatment) { treatments.add(treatment); }
+    public LocalDateTime getDateCreated() { return dateCreated; }
+    public List<String> getDiagnoses() { return diagnoses; }
+    public List<String> getPrescriptions() { return prescriptions; }
+    public List<String> getTreatments() { return treatments; }
 }
