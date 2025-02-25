@@ -74,4 +74,53 @@ public final class RoomController {
     public List<Room> getAllRooms() {
         return rooms;
     }
+
+    public String displayAllRooms() {
+        System.out.println("\n=== All Rooms ===");
+        if (rooms.isEmpty()) {
+            System.out.println("No rooms available.");
+        } else {
+            int columnCount = 3;
+            for (int i = 0; i < rooms.size(); i += columnCount) {
+                int end = Math.min(i + columnCount, rooms.size());
+                List<Room> rowRooms = rooms.subList(i, end);
+    
+                // Prepare each line part for all rooms in the current row
+                List<String> topParts = new ArrayList<>();
+                List<String> line1Parts = new ArrayList<>();
+                List<String> line2Parts = new ArrayList<>();
+                List<String> bottomParts = new ArrayList<>();
+    
+                for (Room room : rowRooms) {
+                    // Room availability and color
+                    String availability = room.getStatus().equalsIgnoreCase("available") ? "Available" : "Occupied";
+                    String color = availability.equalsIgnoreCase("Available") ? "\u001B[32m" : "\u001B[31m";
+                    String reset = "\u001B[0m";
+    
+                    // Top and bottom border parts
+                    topParts.add("     +-----------------+");
+                    bottomParts.add("     +-----------------+");
+    
+                    // Line 1: Room ID and Availability
+                    String roomID = color + room.getRoomID() + reset;
+                    String availText = color + availability + reset;
+                    String line1 = String.format("     | %-12s[%18s]  |", roomID, availText);
+                    line1Parts.add(line1);
+    
+                    // Line 2: Room Type
+                    String typeText = "Type: " + room.getType();
+                    String line2 = String.format("     | %-16s|", typeText);
+                    line2Parts.add(line2);
+                }
+    
+                // Print combined lines for the current row
+                System.out.println(String.join("   ", topParts));
+                System.out.println(String.join("   ", line1Parts));
+                System.out.println(String.join("   ", line2Parts));
+                System.out.println(String.join("   ", bottomParts));
+                System.out.println(); // Empty line after each row
+            }
+        }
+        return null;
+    }
 }   

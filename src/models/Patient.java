@@ -1,10 +1,9 @@
 package models;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Patient extends Person {
-    private List<MedicalRecord> medicalHistory;
+    private final List<MedicalRecord> medicalHistory;
 
     public Patient() {
         this.medicalHistory = new ArrayList<>();

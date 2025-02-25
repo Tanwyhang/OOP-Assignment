@@ -8,6 +8,7 @@ public class AdminController {
     private static final String ADMIN_FILE = "data/admin.csv";
     private Admin admin;
 
+
     public AdminController() {
         loadAdminFromFile();
     }
@@ -16,9 +17,13 @@ public class AdminController {
         return admin != null && admin.getUserID().equals(userID) && admin.getPassword().equals(password);
     }
 
-    public void changePassword(String newPassword) {
-        admin.setPassword(newPassword);
-        saveAdminToFile();
+    public Boolean changePassword(String oldPassword, String newPassword) {
+        if (admin.getPassword().equals(oldPassword)) {
+            admin.setPassword(newPassword);
+            saveAdminToFile();
+            return true;
+        }
+        return false;
     }
 
     private void loadAdminFromFile() {

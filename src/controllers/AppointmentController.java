@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import models.Appointment;
 
-public class AppointmentController {
-    private List<Appointment> appointments;
+public final class AppointmentController {
+    private final List<Appointment> appointments;
 
     public AppointmentController() {
         this.appointments = new ArrayList<>();

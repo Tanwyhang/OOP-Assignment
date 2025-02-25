@@ -14,7 +14,8 @@ public class Main {
     // MAIN ENTRY POINT
     public static void main(String[] args) {
         initializeControllers();
-        showLoginScreen();
+        //showLoginScreen();
+        showMainMenu();
     }
 
     private static void initializeControllers() {
@@ -46,15 +47,7 @@ public class Main {
     private static void showMainMenu() {
         while (true) {
             clearScreen();
-            System.out.println("\n=== Main Menu ===");
-            System.out.println("1. Manage Rooms");
-            System.out.println("2. Manage Patients");
-            System.out.println("3. Manage Doctors");
-            System.out.println("4. Manage Appointments");
-            System.out.println("5. Medical Records");
-            System.out.println("6. Search/View Data");
-            System.out.println("7. Change Password");
-            System.out.println("8. Exit");
+            System.out.println(StringConstants.MAIN_MENU);
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
@@ -74,49 +67,84 @@ public class Main {
         }
     }
 
+    // 1. MANAGE ROOMS
     private static void manageRooms() {
-        clearScreen();
-        System.out.println("\n=== Room Management ===");
-        System.out.println("1. Add Room");
-        System.out.println("2. View All Rooms");
-        System.out.println("3. Update Room Status");
-        System.out.print("Choose an option: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        switch (choice) {
-            case 1 -> {
-                System.out.print("Enter room type: ");
-                String type = scanner.nextLine();
-                roomController.addRoom(type);
-                System.out.println("Room added successfully!");
+        while (true) {
+            clearScreen();
+            roomController.displayAllRooms();
+            System.out.println(StringConstants.ROOM_MENU);
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 0 -> {break;} // Exit to main menu
+                // Add Room
+                case 1 -> {
+                    while (true) { // Loop until valid room type is chosen
+                        clearScreen();
+                        roomController.displayAllRooms();
+                        System.out.println(StringConstants.ROOM_TYPE_MENU);
+                        System.out.print("Choose an option: ");
+                        int roomTypeChoice = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
+                    
+                        String type;
+                        switch (roomTypeChoice) {
+                            //case 0 -> break; // Exit to main menu
+                            case 1 -> type = "ICU";
+                            case 2 -> type = "Ward";
+                            case 3 -> type = "Emergency";
+                            case 4 -> type = "Operation";
+                            case 5 -> type = "Isolation";
+                            default -> {
+                                System.out.println("Invalid room type choice!");
+                                pause();
+                                continue; // Restart loop
+                            }
+                        }
+                        // if not invalid (valid), add room
+                        roomController.addRoom(type);
+                        System.out.println("Room added successfully!");
+                        pause();
+                        break;
+                    }
+                }
+
+                // Remove Room
+                case 2 -> {
+                    clearScreen();
+                    roomController.displayAllRooms();
+                    System.out.print("Enter room ID to remove: ");
+                    String roomID = scanner.nextLine();
+                    if (roomController.removeRoom(roomID)) {
+                        System.out.println("Room removed successfully!");
+                    } else {
+                        System.out.println("Room not found!");
+                    }
+                    pause();
+                }
+
+                // Update Room Status
+                case 3 -> {
+                    clearScreen();
+                    roomController.displayAllRooms();
+                    System.out.print("Enter room ID: ");
+                    String roomID = scanner.nextLine();
+                    System.out.print("Enter new status (available/unavailable): ");
+                    String status = scanner.nextLine();
+                    roomController.updateRoomStatus(roomID, status);
+                    System.out.println("Room status updated successfully!");
+                }
+                default -> System.out.println("Invalid choice!");
             }
-            case 2 -> {
-                clearScreen();
-                System.out.println("\n=== All Rooms ===");
-                roomController.getAllRooms().forEach(room ->
-                    System.out.println("Room ID: " + room.getRoomID() +
-                                      ", Type: " + room.getType() +
-                                      ", Status: " + room.getStatus()));
-            }
-            case 3 -> {
-                System.out.print("Enter room ID: ");
-                String roomID = scanner.nextLine();
-                System.out.print("Enter new status (available/unavailable): ");
-                String status = scanner.nextLine();
-                roomController.updateRoomStatus(roomID, status);
-                System.out.println("Room status updated successfully!");
-            }
-            default -> System.out.println("Invalid choice!");
         }
     }
 
+    // 2. MANAGE PATIENTS
     private static void searchViewData() {
         clearScreen();
-        System.out.println("\n=== Search/View Data ===");
-        System.out.println("1. Search Patients");
-        System.out.println("2. Search Doctors");
-        System.out.println("3. View Doctors by Department");
-        System.out.println("4. View Doctors by Experience");
+        System.out.println(StringConstants.SEARCH_VIEW_MENU);
         System.out.print("Choose an option: ");
         int choice = scanner.nextInt();
         scanner.nextLine();
@@ -157,16 +185,23 @@ public class Main {
             default -> System.out.println("Invalid choice!");
         }
     }
-
+    // 7. CHANGE PASSWORD
     private static void changePassword() {
+        System.out.print("Enter current password: ");
+        String oldPassword = scanner.nextLine();
         System.out.print("Enter new password: ");
         String newPassword = scanner.nextLine();
-        adminController.changePassword(newPassword);
-        System.out.println("Password changed successfully!");
-        scanner.nextLine();
+
+        if (adminController.changePassword(oldPassword, newPassword)) {
+            System.out.println("Password changed successfully!");
+        } else {
+            System.out.println("Invalid current password! Try again.");
+        }
+        
+        pause();
     }
 
-    // Utility Methods
+    // Utility Methods 
     private static void clearScreen() {
         try {
             if (System.getProperty("os.name").contains("Windows")) { // For Windows systems
@@ -177,5 +212,10 @@ public class Main {
         } catch (IOException | InterruptedException e) {
             System.err.println("Error clearing screen: " + e.getMessage());
         }
+    }
+
+    private static void pause() {
+        System.out.println("Press Enter to continue...");
+        scanner.nextLine();
     }
 }
