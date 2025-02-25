@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import models.Room;
 
-public class RoomController {
-    private List<Room> rooms;
+public final class RoomController {
+    private final List<Room> rooms;
 
     public RoomController() {
         this.rooms = new ArrayList<>();
@@ -69,5 +69,9 @@ public class RoomController {
                 System.err.println("Error loading rooms from file: " + e.getMessage());
             }
         }
+    }
+
+    public List<Room> getAllRooms() {
+        return rooms;
     }
 }   

@@ -4,11 +4,11 @@ package controllers;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import models.MedicalRecord;
 import java.util.List;
+import models.MedicalRecord;
 
-public class MedicalRecordController {
-    private List<MedicalRecord> records;
+public final class MedicalRecordController {
+    private final List<MedicalRecord> records;
 
     public MedicalRecordController() {
         this.records = new ArrayList<>();

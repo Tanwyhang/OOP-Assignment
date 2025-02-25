@@ -1,13 +1,13 @@
 package controllers;
 
-import models.Patient;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import models.Patient;
 
-public class PatientController {
-    private List<Patient> patients;
+public final class PatientController {
+    private final List<Patient> patients;
 
     public PatientController() {
         this.patients = new ArrayList<>();
@@ -73,4 +73,16 @@ public class PatientController {
             }
         }
     }
+
+    public List<Patient> getAllPatients() {
+        return patients;
+    }
+
+    public List<Patient> searchPatientsByName(String name) {
+        return patients.stream()
+            .filter(patient -> patient.getName().toLowerCase().contains(name.toLowerCase()))
+            .toList();
+    }
+
+
 }

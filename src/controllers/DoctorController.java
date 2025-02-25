@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import models.Doctor;
 
-public class DoctorController {
-    private List<Doctor> doctors;
+public final class DoctorController {
+    private final List<Doctor> doctors;
 
     public DoctorController() {
         this.doctors = new ArrayList<>();
@@ -44,6 +44,25 @@ public class DoctorController {
             .orElse(null);
     }
 
+    public List<Doctor> searchDoctorsByName(String doctorName) {
+        return doctors.stream()
+            .filter(d -> d.getName().equalsIgnoreCase(doctorName))
+            .toList();
+    }
+
+    public List<Doctor> getDoctorsByDepartment(String department) {
+        return doctors.stream()
+            .filter(d -> d.getDepartment().equalsIgnoreCase(department))
+            .toList();
+    }
+
+    public List<Doctor> getDoctorsByExperience(int yearsOfExperience) {
+        return doctors.stream()
+            .filter(d -> d.getYearsOfExperience() >= yearsOfExperience)
+            .toList();
+    }
+
+    // FILE IO HANDLING
     public void saveDoctorsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/doctors.csv"))) {
             for (Doctor doctor : doctors) {
