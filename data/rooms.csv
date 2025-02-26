@@ -1,6 +1,11 @@
-R3,Ward,unavailable
-R4,ICU,unavailable
-R5,ICU,Available
-R8,ICU,Available
-R9,ICU,Available
-R6,Emergency,Available
+R72,ICU,Available
+R54,ICU,Available
+R47,ICU,Available
+R77,ICU,unavailable
+R45,ICU,Available
+R13,ICU,Available
+R57,ICU,Available
+R81,ICU,Available
+R75,Isolation,Available
+R26,Emergency,Available
+R40,Ward,Available

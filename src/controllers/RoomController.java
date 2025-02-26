@@ -3,10 +3,12 @@ package controllers;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import models.Room;
 
 public final class RoomController {
     private final List<Room> rooms;
+    private static final Random random = new Random();
 
     public RoomController() {
         this.rooms = new ArrayList<>();
@@ -14,7 +16,20 @@ public final class RoomController {
     }
 
     public boolean addRoom(String type) {
-        Room newRoom = new Room("R" + (rooms.size() + 1), type, "Available");
+        // Generate a unique RoomID
+        Room newRoom = null;
+
+        while (true) { 
+            int id = random.nextInt(99) + 1; // Generates a number between 1 and 99
+            final String newRoomID = "R" + String.format("%02d", id); // Formats the number to always have two digits (e.g., R01, R02, ..., R99)
+            if (!rooms.stream().anyMatch(room -> room.getRoomID().equals(newRoomID))) {
+                // Create a new Room object with the generated ID and specified type
+                newRoom = new Room(newRoomID, type, "Available");
+                break;
+            }
+        }
+        
+        // Add the new room to the list
         rooms.add(newRoom);
         saveRoomsToFile();
         return true;

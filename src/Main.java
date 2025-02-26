@@ -55,13 +55,13 @@ public class Main {
             // MAIN MENU CHOICE HANDLING 
             switch (choice) {
                 case 1: manageRooms(); break;
-                //case 2: managePatients(); break;
+                case 2: managePatients(); break;
                 //case 3: manageDoctors(); break;
                 //case 4: manageAppointments(); break;
                 //case 5: manageMedicalRecords(); break;
                 case 6: searchViewData(); break;
                 case 7: changePassword(); break;
-                case 8: System.exit(0);
+                case 0: System.exit(0);
                 default: System.out.println("Invalid choice!");
             }
         }
@@ -91,7 +91,10 @@ public class Main {
                     
                         String type;
                         switch (roomTypeChoice) {
-                            //case 0 -> break; // Exit to main menu
+                            case 0 -> {
+                                type = null;
+                                break;
+                            } // Exit to "Manage Rooms"
                             case 1 -> type = "ICU";
                             case 2 -> type = "Ward";
                             case 3 -> type = "Emergency";
@@ -104,9 +107,11 @@ public class Main {
                             }
                         }
                         // if not invalid (valid), add room
-                        roomController.addRoom(type);
-                        System.out.println("Room added successfully!");
-                        pause();
+                        if (type != null) {
+                            roomController.addRoom(type);
+                            System.out.println("Room added successfully!");
+                            pause();
+                        }
                         break;
                     }
                 }
@@ -131,17 +136,62 @@ public class Main {
                     roomController.displayAllRooms();
                     System.out.print("Enter room ID: ");
                     String roomID = scanner.nextLine();
-                    System.out.print("Enter new status (available/unavailable): ");
-                    String status = scanner.nextLine();
-                    roomController.updateRoomStatus(roomID, status);
+                    System.out.print("Assign new status:");
+                    System.out.print("\n[1] Available\n[2] Occupied\nChoose an option: ");
+                    int status = scanner.nextInt();
+                    switch (status) {
+                        case 1 -> {roomController.updateRoomStatus(roomID, "available");}
+                        case 2 -> {roomController.updateRoomStatus(roomID, "unavailable");}
+                        default -> throw new AssertionError();
+                    }
+                    
                     System.out.println("Room status updated successfully!");
                 }
                 default -> System.out.println("Invalid choice!");
             }
+            break;
         }
     }
 
     // 2. MANAGE PATIENTS
+    private static void managePatients() {
+        while (true) {
+            clearScreen();
+            System.out.println(StringConstants.PATIENT_MENU);
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 0 -> {break;} // Exit to main menu
+                // Add Patient
+                case 1 -> {
+                    clearScreen();
+                    System.out.print("Enter patient name: ");
+                    String name = scanner.nextLine();
+
+                    System.out.print("Enter patient age: ");
+                    int age = scanner.nextInt();
+                    scanner.nextLine();
+
+                    System.out.print("Enter patient gender (M/F): ");
+                    char gender = scanner.nextLine().charAt(0);
+                    
+                    System.out.print("Enter patient address: ");
+                    String address = scanner.nextLine();
+
+                    System.out.print("Enter patient phone number: ");
+                    String phoneNumber = scanner.nextLine();
+
+                    patientController.registerPatient(name, address, phoneNumber, gender, age);
+                    System.out.println("Patient added successfully!");
+                    scanner.nextLine();
+                }
+            }
+        }
+    }
+
+    // 6. SEARCH/VIEW DATA
     private static void searchViewData() {
         clearScreen();
         System.out.println(StringConstants.SEARCH_VIEW_MENU);

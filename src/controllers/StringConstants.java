@@ -31,7 +31,7 @@ public class StringConstants {
                                                 [3] Emergency
                                                 [4] Operation
                                                 [5] Isolation
-                                                [0] Back to Main Menu
+                                                [0] Back to "Manage Rooms"
                                                 """;
     
     // Patient Menu

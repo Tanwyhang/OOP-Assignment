@@ -22,4 +22,9 @@ public class Staff extends Person {
     public void setShift(String shift) { this.shift = shift; }
     public int getYearsOfExperience() { return yearsOfExperience; }
     public void setYearsOfExperience(int years) { this.yearsOfExperience = years; }
+
+    @Override
+    String show_profile() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

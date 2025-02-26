@@ -5,9 +5,6 @@ import java.util.List;
 public class Patient extends Person {
     private final List<MedicalRecord> medicalHistory;
 
-    public Patient() {
-        this.medicalHistory = new ArrayList<>();
-    }
 
     public Patient(String personID, String name, String address, String phoneNumber, char gender, int age) {
         super(personID, name, address, phoneNumber, gender, age);
@@ -20,5 +17,10 @@ public class Patient extends Person {
 
     public List<MedicalRecord> getMedicalHistory() {
         return medicalHistory;
+    }
+
+    @Override
+    String show_profile() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

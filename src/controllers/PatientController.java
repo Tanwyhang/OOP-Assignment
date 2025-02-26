@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import models.Patient;
 
 public final class PatientController {
@@ -14,10 +15,25 @@ public final class PatientController {
         loadPatientsFromFile();
     }
 
-    public boolean registerPatient(Patient patient) {
-        patients.add(patient);
+    public boolean registerPatient(String name, String address, String phoneNumber, char gender, int age) {
+        String patientID = generateUniquePatientID();
+        Patient newPatient = new Patient(patientID, name, address, phoneNumber, gender, age);
+        
+        // Add to list and save
+        patients.add(newPatient);
         savePatientsToFile();
         return true;
+    }
+    
+    private String generateUniquePatientID() {
+        Random random = new Random();
+        while (true) {
+            int id = random.nextInt(10000); // Generates a number between(inclusive) 0 and 9999 
+            String candidate = "P" + String.format("%04d", id);
+            if (!patients.stream().anyMatch(p -> p.getPersonID().equals(candidate))) {
+                return candidate;
+            }
+        }
     }
 
     public boolean dischargePatient(String patientID) {
