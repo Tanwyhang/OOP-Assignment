@@ -15,7 +15,7 @@ public final class PatientController {
         loadPatientsFromFile();
     }
 
-    public boolean registerPatient(String name, String address, String phoneNumber, char gender, int age) {
+    public boolean   registerPatient(String name, String address, String phoneNumber, char gender, int age) {
         String patientID = generateUniquePatientID();
         Patient newPatient = new Patient(patientID, name, address, phoneNumber, gender, age);
         
@@ -33,6 +33,50 @@ public final class PatientController {
             if (!patients.stream().anyMatch(p -> p.getPersonID().equals(candidate))) {
                 return candidate;
             }
+        }
+    }
+
+    // Display all patients
+    public void displayAllPatients() {
+        System.out.println("\n=== All Patients ===\n");
+        if (patients.isEmpty()) {
+            System.out.println("No patients found.");
+        } else {
+            // Display PatientID and Name
+            patients.forEach(patient -> System.out.println(patient.getPersonID() + " - " + patient.getName()));
+        }
+    }
+
+    //View patient details
+    public void viewPatientDetails(String patientID) {
+        Patient patient = findPatientByID(patientID);
+        if (patient != null) {
+            //Show patient details
+            System.out.println("\n=== Patient Details ===\n");
+            System.out.println("Patient ID  : " + patient.getPersonID());
+            System.out.println("Name        : " + patient.getName());
+            System.out.println("Address     : " + patient.getAddress());
+            System.out.println("Phone Number: " + patient.getPhoneNumber());
+            System.out.println("Gender      : " + patient.getGender());
+            System.out.println("Age         : " + patient.getAge());
+            
+        } else {
+            System.out.println("Patient not found.");
+        }
+    }
+
+    //Update patient details
+    public void updatePatientDetails(String patientID, String name, String address, String phoneNumber, char gender, int age) {
+        Patient patient = findPatientByID(patientID);
+        if (patient != null) {
+            patient.setName(name);
+            patient.setAddress(address);
+            patient.setPhoneNumber(phoneNumber);
+            patient.setGender(gender);
+            patient.setAge(age);
+            savePatientsToFile();
+        } else {
+            System.out.println("Patient not found.");
         }
     }
 

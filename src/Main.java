@@ -14,7 +14,7 @@ public class Main {
     // MAIN ENTRY POINT
     public static void main(String[] args) {
         initializeControllers();
-        //showLoginScreen();
+        showLoginScreen();
         showMainMenu();
     }
 
@@ -56,7 +56,7 @@ public class Main {
             switch (choice) {
                 case 1: manageRooms(); break;
                 case 2: managePatients(); break;
-                //case 3: manageDoctors(); break;
+                case 3: manageDoctors(); break;
                 //case 4: manageAppointments(); break;
                 //case 5: manageMedicalRecords(); break;
                 case 6: searchViewData(); break;
@@ -163,7 +163,7 @@ public class Main {
             scanner.nextLine();
 
             switch (choice) {
-                case 0 -> {break;} // Exit to main menu
+                case 0 -> {showMainMenu();} // Exit to main menu
                 // Add Patient
                 case 1 -> {
                     clearScreen();
@@ -186,6 +186,129 @@ public class Main {
                     patientController.registerPatient(name, address, phoneNumber, gender, age);
                     System.out.println("Patient added successfully!");
                     scanner.nextLine();
+                }
+                // Remove Patient
+                case 2 -> {
+                    clearScreen();
+                    patientController.displayAllPatients();
+                    System.out.print("\nEnter patient ID to remove: ");
+                    String patientID = scanner.nextLine();
+                    if (patientController.dischargePatient(patientID)) {
+                        System.out.println("Patient removed successfully!");
+                    } else {
+                        System.out.println("Patient not found!");
+                    }
+                    pause();
+                }
+                // Update Patient Details
+                case 3 -> {
+                    clearScreen();
+                    patientController.displayAllPatients();
+                    System.out.print("Enter patient ID to update: ");
+                    String patientID = scanner.nextLine();
+                    
+                    System.out.print("\nEnter new name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter new age: ");
+                    int age = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Enter new gender (M/F): ");
+                    char gender = scanner.nextLine().charAt(0);
+                    System.out.print("Enter new address: ");
+                    String address = scanner.nextLine();
+                    System.out.print("Enter new phone number: ");
+                    String phoneNumber = scanner.nextLine();
+                    
+                    patientController.updatePatientDetails(patientID, name, address, phoneNumber, gender, age);
+                    System.out.println("\nPatient details updated successfully!");
+                    pause();
+                }
+
+                // View Patient Details
+                case 4 -> {
+                    clearScreen();
+                    patientController.displayAllPatients();
+                    System.out.print("Enter patient ID to view details: ");
+                    String patientID = scanner.nextLine();
+                    patientController.viewPatientDetails(patientID);
+                    pause();
+                }
+            }
+        }
+    }
+
+    // 3. MANAGE DOCTORS
+    public static void manageDoctors() {
+        while (true) {
+            clearScreen();
+            System.out.println(StringConstants.DOCTOR_MENU);
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch(choice){
+                case 0 -> {showMainMenu();} // Exit to main menu
+                // Add Doctor
+                case 1 -> {
+                    clearScreen();
+                    System.out.print("Enter doctor name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter doctor age: ");
+                    int age = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Enter doctor gender (M/F): ");
+                    char gender = scanner.nextLine().charAt(0);
+                    System.out.print("Enter doctor address: ");
+                    String address = scanner.nextLine();
+                    System.out.print("Enter doctor phone number: ");
+                    String phoneNumber = scanner.nextLine();
+                    System.out.print("Enter doctor department: ");
+                    String department = scanner.nextLine();
+                    System.out.print("Enter doctor shift: ");
+                    String shift = scanner.nextLine();
+                    System.out.print("Enter doctor years of experience: ");
+                    int yearsOfExperience = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Enter doctor specialization: ");
+                    String specialization = scanner.nextLine();
+                    doctorController.hireDoctor(name, address, phoneNumber, gender, age, department, shift, yearsOfExperience, specialization);
+                    System.out.println("Doctor added successfully!");
+                    pause();
+                }
+                // Remove Doctor
+                case 2 -> {
+                    clearScreen();
+                    doctorController.displayAllDoctors();
+                    System.out.print("Enter doctor ID to remove: ");
+                    String doctorID = scanner.nextLine();
+                    if (doctorController.removeDoctor(doctorID)) {
+                        System.out.println("Doctor removed successfully!");
+                    } else {
+                        System.out.println("Doctor not found!");
+                    }
+                    pause();
+                }
+                // Update Doctor Details
+                case 3 -> {
+                    clearScreen();
+                    doctorController.displayAllDoctors();
+                    System.out.print("Enter doctor ID to update: ");
+                    String doctorID = scanner.nextLine();
+                    System.out.print("Enter new specialization: ");
+                    String specialization = scanner.nextLine();
+                    doctorController.updateSpecialization(doctorID, specialization);
+                    System.out.println("Doctor specialization updated successfully!");
+                    pause();
+                }
+                // View Doctors
+                case 4 -> {
+                    clearScreen();
+                    doctorController.displayAllDoctors();
+                    // Enter PersonID to view details
+                    System.out.print("Enter doctor ID to view details: ");
+                    String personID = scanner.nextLine();
+                    doctorController.viewDoctorDetails(personID);
+                    pause();
                 }
             }
         }
@@ -265,7 +388,7 @@ public class Main {
     }
 
     private static void pause() {
-        System.out.println("Press Enter to continue...");
+        System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
     }
 }

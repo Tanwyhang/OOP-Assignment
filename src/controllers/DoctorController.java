@@ -3,7 +3,10 @@ package controllers;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import models.Doctor;
+import models.Patient;
 
 public final class DoctorController {
     private final List<Doctor> doctors;
@@ -13,10 +16,45 @@ public final class DoctorController {
         loadDoctorsFromFile();
     }
 
-    public boolean hireDoctor(Doctor doctor) {
-        doctors.add(doctor);
+    public boolean hireDoctor(String name, String address, String phoneNumber, char gender, int age, String department, String shift, int yearsOfExperience, String specialization) {
+        String personID = generateUniquePersonID();
+        Doctor newDoctor = new Doctor(personID, name, address, phoneNumber, gender, age, department, shift, yearsOfExperience, specialization);
+
+        doctors.add(newDoctor);
         saveDoctorsToFile();
         return true;
+    }
+
+    // View doctor details
+    public void viewDoctorDetails(String personID) {
+        Doctor doctor = findDoctorByID(personID);
+        if (doctor != null) {
+            // Show doctor details
+            System.out.println("\n=== Doctor Details ===\n");
+            System.out.println("Doctor ID          : " + doctor.getPersonID());
+            System.out.println("Name               : " + doctor.getName());
+            System.out.println("Address            : " + doctor.getAddress());
+            System.out.println("Phone Number       : " + doctor.getPhoneNumber());
+            System.out.println("Gender             : " + doctor.getGender());
+            System.out.println("Age                : " + doctor.getAge());
+            System.out.println("Department         : " + doctor.getDepartment());
+            System.out.println("Shift              : " + doctor.getShift());
+            System.out.println("Years of Experience: " + doctor.getYearsOfExperience());
+            System.out.println("Specialization     : " + doctor.getSpecialization());
+        } else {
+            System.out.println("Doctor not found.");
+        }
+    }
+
+    private String generateUniquePersonID() {
+        Random random = new Random();
+        while (true) {
+            int id = random.nextInt(10000); // Generates a number between(inclusive) 0 and 9999 
+            String candidate = "D" + String.format("%04d", id);
+            if (!doctors.stream().anyMatch(p -> p.getPersonID().equals(candidate))) {
+                return candidate;
+            }
+        }
     }
 
     public boolean removeDoctor(String doctorID) {
@@ -35,6 +73,16 @@ public final class DoctorController {
                 doctor.setSpecialization(specialization);
                 saveDoctorsToFile();
             });
+    }
+
+    public void displayAllDoctors() {
+        System.out.println("\n=== All Doctors ===\n");
+        if (doctors.isEmpty()) {
+            System.out.println("No doctors found.");
+        } else {
+            // Display DoctorID and Name
+            doctors.forEach(doctor -> System.out.println(doctor.getPersonID() + " - " + doctor.getName()));
+        }
     }
 
     public Doctor findDoctorByID(String doctorID) {
