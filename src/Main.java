@@ -1,5 +1,8 @@
 import controllers.*;
+import models.Appointment;
+
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class Main {
@@ -311,6 +314,76 @@ public class Main {
                     pause();
                 }
             }
+        }
+    }
+
+    // 4. MANAGE APPOINTMENT
+    private static void manageAppointments(){
+        clearScreen();
+        System.out.println(StringConstants.APPOINTMENT_MENU);
+        System.out.print("Choose an option: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        switch(choice){
+            case 0 -> {break;}
+            case 1 -> {
+                clearScreen();
+                System.out.print("Enter patientID: ");
+                String patientID = scanner.nextLine();
+
+                System.out.print("Enter doctorID: ");
+                String doctorID = scanner.nextLine();
+                scanner.nextLine();
+
+                System.out.print("Enter roomID: ");
+                String roomID = scanner.nextLine();
+
+                System.out.print("Enter appointment date(DD/MM/YYYY hour:minute): ");
+                String input_date = scanner.nextLine();
+                String[] input_date2 = input_date.split("\\/\\s\\:");
+                int day = Integer.parseInt(input_date2[0]);
+                int month = Integer.parseInt(input_date2[1]);
+                int year = Integer.parseInt(input_date2[2]);
+                int hours = Integer.parseInt(input_date2[3]);
+                int minute = Integer.parseInt(input_date2[4]);
+
+                LocalDateTime date = LocalDateTime.of(year,month,day,hours,minute);
+
+                appointmentController.scheduleAppointment(patientID, doctorID, roomID, date);
+                
+                // Show the apppointment ID
+                System.out.println("The appointment has been added successfully.");
+            }
+            case 2 -> {
+                clearScreen();
+                System.out.print("Enter the appointmentID: ");
+                String appointmentID = scanner.nextLine();
+
+                boolean removed = appointmentController.cancelAppointment(appointmentID);
+                if(removed){
+                    System.out.println("The appointment have been removed successfully.");
+                }else{
+                    System.out.println("The appointment failed to be removed.");
+                }
+            }
+            case 3 -> {
+                clearScreen();
+                System.out.println("Enter appointmentID: ");
+                String appointmentID = scanner.nextLine();
+
+                System.out.print("Enter the new status: ");
+                String status = scanner.nextLine();
+                boolean update = appointmentController.updateAppointmentStatus(appointmentID, status);
+                if (update){
+                    System.out.println("The appiointment has been update succesfully.");
+                }else{
+                    System.out.println("The appointment failed to update.");
+                }
+            }
+            case 4 -> {
+                //View appointments
+            }
+            
         }
     }
 
