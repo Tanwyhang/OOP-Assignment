@@ -447,6 +447,7 @@ public class Main {
         
     }
 
+    // 5. MANAGE MEDICAL RECORDS
     private static void manageMedicalRecords() {
         while (true) {
             clearScreen();
@@ -458,14 +459,59 @@ public class Main {
             switch (choice) {
                 case 0 -> {
                     showMainMenu();
+                    //Back to Main Menu
                 }
                 case 1 -> {
-                    //Add medical record
+                    // Add medical record
                     clearScreen();
                     System.out.print("Enter the patientID: ");
                     String patientID = scanner.nextLine();
-                    
-                    
+                    String recordID = medicalRecordController.createRecord(patientID);
+
+                    // Add diagnosis
+                    System.out.print("Enter the diagnosis: ");
+                    String diagnosis = scanner.nextLine();
+                    medicalRecordController.addDiagnosis(recordID, diagnosis);
+
+                    // Add prescription
+                    System.out.print("Enter the prescription: ");
+                    String prescription = scanner.nextLine();
+                    medicalRecordController.addPrescription(recordID, prescription);
+
+                    // Display the recordID
+                    System.out.println("Record ID: " + recordID);
+                    System.out.println("Medical record added successfully.");
+                }
+                case 2 -> {
+                    // Remove medical record
+                    clearScreen();
+                    System.out.print("Enter the record ID: ");
+                    String recordID = scanner.nextLine();
+
+                    boolean removed = medicalRecordController.removeRecord(recordID);
+                    if (removed) {
+                        System.out.println("Medical record removed successfully.");
+                    }else{
+                        System.out.println("Record not found.");
+                    }
+                }
+                case 3 -> {
+                    // Update medical record details
+                    clearScreen();
+                    System.out.print("Enter the record ID: ");
+                    String recordID = scanner.nextLine();
+
+                    // Update diagnosis
+                    System.out.print("Enter the new diagnosis: ");
+                    String newDiagnosis = scanner.nextLine();
+                    medicalRecordController.addDiagnosis(recordID, newDiagnosis);
+
+                    // Update prescription
+                    System.out.print("Enter the new prescription: ");
+                    String newPrescription = scanner.nextLine();
+                    medicalRecordController.addPrescription(recordID, newPrescription);
+
+                    System.out.println("The record has been updated successfully.");
                 }
             }
         }

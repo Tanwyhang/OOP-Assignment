@@ -42,6 +42,14 @@ public final class MedicalRecordController {
             });
     }
 
+    public boolean removeRecord(String recordID){
+        boolean removed = records.removeIf(records -> records.getRecordID().equals(recordID));
+        if(removed){
+            saveRecordsToFile();
+        }
+        return removed;
+    }
+
     public List<MedicalRecord> getFullHistory(String patientID) {
         return records; // Implement filtering by patientID if needed
     }
