@@ -14,9 +14,14 @@ public final class AppointmentController {
         loadAppointmentsFromFile();
     }
 
+    public String returnAppointmentID(){
+        return "A" + (appointments.size());
+    }
+
     public boolean scheduleAppointment(String patientID, String doctorID, String roomID, LocalDateTime date) {
         Appointment appointment = new Appointment("A" + (appointments.size() + 1), date, "Scheduled");
         appointments.add(appointment);
+        returnAppointmentID();
         saveAppointmentsToFile();
         return true;
     }
@@ -40,6 +45,18 @@ public final class AppointmentController {
             })
             .orElse(false);
     }
+
+    public void displayAllAppointment(){
+        System.out.printf("%-20s %-20s %-10s\n\n","AppointmentID","Date","Status");
+        if(appointments.isEmpty()){
+            System.out.println("No appointments scheduled");
+        }else{
+            for(Appointment appointment : appointments){
+                System.out.printf("%-20s %-20s %-10s\n",appointment.getAppointmentID(),appointment.getDate(),appointment.getStatus());
+            }
+        }
+        }
+        
 
     public void saveAppointmentsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/appointments.csv"))) {

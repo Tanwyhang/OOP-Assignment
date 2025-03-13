@@ -63,6 +63,14 @@ public class StringConstants {
                                                   [4] View Appointments
                                                   [0] Back to Main Menu
                                                   """;
+
+    public static final String MEDICALRECORD_MENU = """
+                                                    === Manage Medical Records ===
+                                                    [1] Add Medical Record
+                                                    [2] Remove Medical Record
+                                                    [3] Update Medical Record Details
+                                                    [0] Back to Main Menu
+                                                    """;
     
     // Search/View Data Menu
     public static final String SEARCH_VIEW_MENU = """
