@@ -4,6 +4,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import models.Appointment;
 
 public final class AppointmentController {
@@ -14,14 +15,34 @@ public final class AppointmentController {
         loadAppointmentsFromFile();
     }
 
+    // unique appointment ID generator Axxxx
+    public String generateUniqueAppointmentID() {
+        Random random = new Random();
+        boolean isUnique = false;
+        String appointmentID = "";
+        
+        while (!isUnique) {
+            // Generate a random 4-digit number
+            int randomNum = 1000 + random.nextInt(9000); // Generates number between 1000-9999
+            appointmentID = "A" + randomNum;
+            
+            // Check if this ID already exists
+            final String finalID = appointmentID;
+            isUnique = appointments.stream()
+                    .noneMatch(appointment -> appointment.getAppointmentID().equals(finalID));
+        }
+        
+        return appointmentID;
+    }
+
     public String returnAppointmentID(){
         return "A" + (appointments.size());
     }
 
     public boolean scheduleAppointment(String patientID, String doctorID, String roomID, LocalDateTime date) {
-        Appointment appointment = new Appointment("A" + (appointments.size() + 1), date, "Scheduled");
+        String appointmentID = generateUniqueAppointmentID();
+        Appointment appointment = new Appointment(appointmentID, date, "Scheduled");
         appointments.add(appointment);
-        returnAppointmentID();
         saveAppointmentsToFile();
         return true;
     }
