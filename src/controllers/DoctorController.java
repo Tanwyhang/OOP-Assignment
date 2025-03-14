@@ -4,19 +4,16 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import models.Doctor;
-import models.Patient;
 
 public final class DoctorController {
-    private final List<Doctor> doctors;
-
-    public DoctorController() {
-        this.doctors = new ArrayList<>();
+    private final static List<Doctor> doctors = new ArrayList<>();
+    
+    static  {
         loadDoctorsFromFile();
     }
 
-    public boolean hireDoctor(String name, String address, String phoneNumber, char gender, int age, String department, String shift, int yearsOfExperience, String specialization) {
+    public static boolean hireDoctor(String name, String address, String phoneNumber, char gender, int age, String department, String shift, int yearsOfExperience, String specialization) {
         String personID = generateUniquePersonID();
         Doctor newDoctor = new Doctor(personID, name, address, phoneNumber, gender, age, department, shift, yearsOfExperience, specialization);
 
@@ -26,7 +23,7 @@ public final class DoctorController {
     }
 
     // View doctor details
-    public void viewDoctorDetails(String personID) {
+    public static void viewDoctorDetails(String personID) {
         Doctor doctor = findDoctorByID(personID);
         if (doctor != null) {
             // Show doctor details
@@ -46,7 +43,7 @@ public final class DoctorController {
         }
     }
 
-    private String generateUniquePersonID() {
+    private static String generateUniquePersonID() {
         Random random = new Random();
         while (true) {
             int id = random.nextInt(10000); // Generates a number between(inclusive) 0 and 9999 
@@ -57,7 +54,7 @@ public final class DoctorController {
         }
     }
 
-    public boolean removeDoctor(String doctorID) {
+    public static boolean removeDoctor(String doctorID) {
         boolean removed = doctors.removeIf(doctor -> doctor.getPersonID().equals(doctorID));
         if (removed) {
             saveDoctorsToFile();
@@ -65,7 +62,7 @@ public final class DoctorController {
         return removed;
     }
 
-    public void updateSpecialization(String doctorID, String specialization) {
+    public static void updateSpecialization(String doctorID, String specialization) {
         doctors.stream()
             .filter(doctor -> doctor.getPersonID().equals(doctorID))
             .findFirst()
@@ -75,7 +72,7 @@ public final class DoctorController {
             });
     }
 
-    public void displayAllDoctors() {
+    public static void displayAllDoctors() {
         System.out.println("\n=== All Doctors ===\n");
         if (doctors.isEmpty()) {
             System.out.println("No doctors found.");
@@ -85,33 +82,33 @@ public final class DoctorController {
         }
     }
 
-    public Doctor findDoctorByID(String doctorID) {
+    private static Doctor findDoctorByID(String doctorID) {
         return doctors.stream()
             .filter(doctor -> doctor.getPersonID().equals(doctorID))
             .findFirst()
             .orElse(null);
     }
 
-    public List<Doctor> searchDoctorsByName(String doctorName) {
+    public static List<Doctor> searchDoctorsByName(String doctorName) {
         return doctors.stream()
             .filter(d -> d.getName().equalsIgnoreCase(doctorName))
             .toList();
     }
 
-    public List<Doctor> getDoctorsByDepartment(String department) {
+    public static List<Doctor> getDoctorsByDepartment(String department) {
         return doctors.stream()
             .filter(d -> d.getDepartment().equalsIgnoreCase(department))
             .toList();
     }
 
-    public List<Doctor> getDoctorsByExperience(int yearsOfExperience) {
+    public static List<Doctor> getDoctorsByExperience(int yearsOfExperience) {
         return doctors.stream()
             .filter(d -> d.getYearsOfExperience() >= yearsOfExperience)
             .toList();
     }
 
     // FILE IO HANDLING
-    public void saveDoctorsToFile() {
+    public static void saveDoctorsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/doctors.csv"))) {
             for (Doctor doctor : doctors) {
                 writer.write(doctor.getPersonID() + "," + doctor.getName() + "," + doctor.getAddress() + "," +
@@ -125,7 +122,7 @@ public final class DoctorController {
         }
     }
 
-    public void loadDoctorsFromFile() {
+    private static void loadDoctorsFromFile() {
         File file = new File("data/doctors.csv");
         if (file.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {

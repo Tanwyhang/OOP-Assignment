@@ -8,4 +8,8 @@ R57,ICU,Available
 R81,ICU,Available
 R75,Isolation,unavailable
 R26,Emergency,Available
-R40,Ward,Available
+R40,Ward,unavailable
+R94,Emergency,Available
+R92,Emergency,Available
+R95,Operation,Available
+R63,Ward,Available

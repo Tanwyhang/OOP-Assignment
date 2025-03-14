@@ -7,15 +7,15 @@ import java.util.Random;
 import models.Room;
 
 public final class RoomController {
-    private final List<Room> rooms;
+    private final static List<Room> rooms = new ArrayList<>();
     private static final Random random = new Random();
 
-    public RoomController() {
-        this.rooms = new ArrayList<>();
+    // load rooms from file when the class is constructed
+    static {
         loadRoomsFromFile();
     }
 
-    public boolean addRoom(String type) {
+    public static boolean addRoom(String type) {
         // Generate a unique RoomID
         Room newRoom = null;
 
@@ -35,7 +35,7 @@ public final class RoomController {
         return true;
     }
 
-    public boolean removeRoom(String roomID) {
+    public static boolean removeRoom(String roomID) {
         boolean removed = rooms.removeIf(room -> room.getRoomID().equals(roomID));
         if (removed) {
             saveRoomsToFile();
@@ -43,7 +43,7 @@ public final class RoomController {
         return removed;
     }
 
-    public void updateRoomStatus(String roomID, String status) {
+    public static void updateRoomStatus(String roomID, String status) {
         rooms.stream()
             .filter(room -> room.getRoomID().equals(roomID))
             .findFirst()
@@ -60,7 +60,7 @@ public final class RoomController {
             .orElse(null);
     }
 
-    public void saveRoomsToFile() {
+    public static void saveRoomsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/rooms.csv"))) {
             for (Room room : rooms) {
                 writer.write(room.getRoomID() + "," + room.getType() + "," + room.getStatus());
@@ -71,7 +71,7 @@ public final class RoomController {
         }
     }
 
-    public void loadRoomsFromFile() {
+    public static void loadRoomsFromFile() {
         File file = new File("data/rooms.csv");
         if (file.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -90,7 +90,7 @@ public final class RoomController {
         return rooms;
     }
 
-    public String displayAllRooms() {
+    public static String displayAllRooms() {
         System.out.println("\n=== All Rooms ===");
         if (rooms.isEmpty()) {
             System.out.println("No rooms available.");

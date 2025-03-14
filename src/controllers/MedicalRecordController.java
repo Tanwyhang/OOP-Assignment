@@ -8,21 +8,20 @@ import java.util.List;
 import models.MedicalRecord;
 
 public final class MedicalRecordController {
-    private final List<MedicalRecord> records;
+    private final static List<MedicalRecord> records = new ArrayList<>();
 
-    public MedicalRecordController() {
-        this.records = new ArrayList<>();
+    static  {
         loadRecordsFromFile();
     }
 
-    public String createRecord(String patientID) {
+    public static String createRecord(String patientID) {
         MedicalRecord record = new MedicalRecord("MR" + (records.size() + 1), LocalDateTime.now());
         records.add(record);
         saveRecordsToFile();
         return record.getRecordID();
     }
 
-    public void addDiagnosis(String recordID, String diagnosis) {
+    public static void addDiagnosis(String recordID, String diagnosis) {
         records.stream()
             .filter(record -> record.getRecordID().equals(recordID))
             .findFirst()
@@ -32,7 +31,7 @@ public final class MedicalRecordController {
             });
     }
 
-    public void addPrescription(String recordID, String medication) {
+    public static void addPrescription(String recordID, String medication) {
         records.stream()
             .filter(record -> record.getRecordID().equals(recordID))
             .findFirst()
@@ -42,8 +41,8 @@ public final class MedicalRecordController {
             });
     }
 
-    public boolean removeRecord(String recordID){
-        boolean removed = records.removeIf(records -> records.getRecordID().equals(recordID));
+    public static boolean removeRecord(String recordID){
+        boolean removed = records.removeIf(record -> record.getRecordID().equals(recordID));
         if(removed){
             saveRecordsToFile();
         }
@@ -54,7 +53,7 @@ public final class MedicalRecordController {
         return records; // Implement filtering by patientID if needed
     }
 
-    public void saveRecordsToFile() {
+    public static void saveRecordsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/medical_records.csv"))) {
             for (MedicalRecord record : records) {
                 writer.write(record.getRecordID() + "," + record.getDateCreated() + "," +
@@ -68,7 +67,7 @@ public final class MedicalRecordController {
         }
     }
 
-    public void loadRecordsFromFile() {
+    private static void loadRecordsFromFile() {
         File file = new File("data/medical_records.csv");
         if (file.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {

@@ -1,18 +1,10 @@
 import controllers.*;
-import models.Appointment;
-
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class Main {
     private final static Scanner scanner = new Scanner(System.in);
     private static AdminController adminController;
-    private static RoomController roomController;
-    private static PatientController patientController;
-    private static DoctorController doctorController;
-    private static AppointmentController appointmentController;
-    private static MedicalRecordController medicalRecordController;
 
     // MAIN ENTRY POINT
     public static void main(String[] args) {
@@ -23,11 +15,6 @@ public class Main {
 
     private static void initializeControllers() {
         adminController = new AdminController();
-        roomController = new RoomController();
-        patientController = new PatientController();
-        doctorController = new DoctorController();
-        appointmentController = new AppointmentController();
-        medicalRecordController = new MedicalRecordController();
     }
 
     // LOGIN SCREEN
@@ -88,9 +75,10 @@ public class Main {
 
     // 1. MANAGE ROOMS
     private static void manageRooms() {
-        while (true) {
+        boolean managingRooms = true;
+        while (managingRooms) {
             clearScreen();
-            roomController.displayAllRooms();
+            RoomController.displayAllRooms();
             System.out.println(StringConstants.ROOM_MENU);
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
@@ -98,13 +86,13 @@ public class Main {
 
             switch (choice) {
                 case 0 -> {
-                    break;
+                    managingRooms = false;
                 } // Exit to main menu
                   // Add Room
                 case 1 -> {
                     while (true) { // Loop until valid room type is chosen
                         clearScreen();
-                        roomController.displayAllRooms();
+                        RoomController.displayAllRooms();
                         System.out.println(StringConstants.ROOM_TYPE_MENU);
                         System.out.print("Choose an option: ");
                         int roomTypeChoice = scanner.nextInt();
@@ -129,7 +117,7 @@ public class Main {
                         }
                         // if not invalid (valid), add room
                         if (type != null) {
-                            roomController.addRoom(type);
+                            RoomController.addRoom(type);
                             System.out.println("Room added successfully!");
                             pause();
                         }
@@ -140,10 +128,10 @@ public class Main {
                 // Remove Room
                 case 2 -> {
                     clearScreen();
-                    roomController.displayAllRooms();
+                    RoomController.displayAllRooms();
                     System.out.print("Enter room ID to remove: ");
                     String roomID = scanner.nextLine();
-                    if (roomController.removeRoom(roomID)) {
+                    if (RoomController.removeRoom(roomID)) {
                         System.out.println("Room removed successfully!");
                     } else {
                         System.out.println("Room not found!");
@@ -154,7 +142,7 @@ public class Main {
                 // Update Room Status
                 case 3 -> {
                     clearScreen();
-                    roomController.displayAllRooms();
+                    RoomController.displayAllRooms();
                     System.out.print("Enter room ID: ");
                     String roomID = scanner.nextLine();
                     System.out.print("Assign new status:");
@@ -162,10 +150,10 @@ public class Main {
                     int status = scanner.nextInt();
                     switch (status) {
                         case 1 -> {
-                            roomController.updateRoomStatus(roomID, "available");
+                            RoomController.updateRoomStatus(roomID, "available");
                         }
                         case 2 -> {
-                            roomController.updateRoomStatus(roomID, "unavailable");
+                            RoomController.updateRoomStatus(roomID, "unavailable");
                         }
                         default -> throw new AssertionError();
                     }
@@ -174,7 +162,6 @@ public class Main {
                 }
                 default -> System.out.println("Invalid choice!");
             }
-            break;
         }
     }
 
@@ -210,17 +197,17 @@ public class Main {
                     System.out.print("Enter patient phone number: ");
                     String phoneNumber = scanner.nextLine();
 
-                    patientController.registerPatient(name, address, phoneNumber, gender, age);
+                    PatientController.registerPatient(name, address, phoneNumber, gender, age);
                     System.out.println("Patient added successfully!");
                     scanner.nextLine();
                 }
                 // Remove Patient
                 case 2 -> {
                     clearScreen();
-                    patientController.displayAllPatients();
+                    PatientController.displayAllPatients();
                     System.out.print("\nEnter patient ID to remove: ");
                     String patientID = scanner.nextLine();
-                    if (patientController.dischargePatient(patientID)) {
+                    if (PatientController.dischargePatient(patientID)) {
                         System.out.println("Patient removed successfully!");
                     } else {
                         System.out.println("Patient not found!");
@@ -230,7 +217,7 @@ public class Main {
                 // Update Patient Details
                 case 3 -> {
                     clearScreen();
-                    patientController.displayAllPatients();
+                    PatientController.displayAllPatients();
                     System.out.print("Enter patient ID to update: ");
                     String patientID = scanner.nextLine();
 
@@ -246,7 +233,7 @@ public class Main {
                     System.out.print("Enter new phone number: ");
                     String phoneNumber = scanner.nextLine();
 
-                    patientController.updatePatientDetails(patientID, name, address, phoneNumber, gender, age);
+                    PatientController.updatePatientDetails(patientID, name, address, phoneNumber, gender, age);
                     System.out.println("\nPatient details updated successfully!");
                     pause();
                 }
@@ -254,10 +241,10 @@ public class Main {
                 // View Patient Details
                 case 4 -> {
                     clearScreen();
-                    patientController.displayAllPatients();
+                    PatientController.displayAllPatients();
                     System.out.print("Enter patient ID to view details: ");
                     String patientID = scanner.nextLine();
-                    patientController.viewPatientDetails(patientID);
+                    PatientController.viewPatientDetails(patientID);
                     pause();
                 }
             }
@@ -300,7 +287,7 @@ public class Main {
                     scanner.nextLine();
                     System.out.print("Enter doctor specialization: ");
                     String specialization = scanner.nextLine();
-                    doctorController.hireDoctor(name, address, phoneNumber, gender, age, department, shift,
+                    DoctorController.hireDoctor(name, address, phoneNumber, gender, age, department, shift,
                             yearsOfExperience, specialization);
                     System.out.println("Doctor added successfully!");
                     pause();
@@ -308,10 +295,10 @@ public class Main {
                 // Remove Doctor
                 case 2 -> {
                     clearScreen();
-                    doctorController.displayAllDoctors();
+                    DoctorController.displayAllDoctors();
                     System.out.print("Enter doctor ID to remove: ");
                     String doctorID = scanner.nextLine();
-                    if (doctorController.removeDoctor(doctorID)) {
+                    if (DoctorController.removeDoctor(doctorID)) {
                         System.out.println("Doctor removed successfully!");
                     } else {
                         System.out.println("Doctor not found!");
@@ -321,23 +308,23 @@ public class Main {
                 // Update Doctor Details
                 case 3 -> {
                     clearScreen();
-                    doctorController.displayAllDoctors();
+                    DoctorController.displayAllDoctors();
                     System.out.print("Enter doctor ID to update: ");
                     String doctorID = scanner.nextLine();
                     System.out.print("Enter new specialization: ");
                     String specialization = scanner.nextLine();
-                    doctorController.updateSpecialization(doctorID, specialization);
+                    DoctorController.updateSpecialization(doctorID, specialization);
                     System.out.println("Doctor specialization updated successfully!");
                     pause();
                 }
                 // View Doctors
                 case 4 -> {
                     clearScreen();
-                    doctorController.displayAllDoctors();
+                    DoctorController.displayAllDoctors();
                     // Enter PersonID to view details
                     System.out.print("Enter doctor ID to view details: ");
                     String personID = scanner.nextLine();
-                    doctorController.viewDoctorDetails(personID);
+                    DoctorController.viewDoctorDetails(personID);
                     pause();
                 }
             }
@@ -358,51 +345,9 @@ public class Main {
 
                 case 1 -> {
                     clearScreen();
-                    System.out.print("Enter patientID: ");
-                    String patientID = scanner.nextLine();
 
-                    System.out.print("Enter doctorID: ");
-                    String doctorID = scanner.nextLine();
-                    //scanner.nextLine();
-
-                    System.out.print("Enter roomID: ");
-                    String roomID = scanner.nextLine();
-
-                    /*System.out.print("Enter appointment date(DD/MM/YYYY hour:minute): ");
-                    String input_date = scanner.nextLine();
-                    String[] input_date2 = input_date.split("\\/\\s\\:");
-                    int day = Integer.parseInt(input_date2[0]);
-                    int month = Integer.parseInt(input_date2[1]);
-                    int year = Integer.parseInt(input_date2[2]);
-                    int hours = Integer.parseInt(input_date2[3]);
-                    int minute = Integer.parseInt(input_date2[4]);
-                    */
-
-                    System.out.print("Enter the appointment day: ");
-                    int day = scanner.nextInt();
-                    System.out.print("Enter the appointment month: ");
-                    int month = scanner.nextInt();
-                    System.out.print("Enter the appointment year: ");
-                    int year = scanner.nextInt();
-                    scanner.nextLine();
-
-                    System.out.print("Enter the appointment hour: ");
-                    int hours = scanner.nextInt();
-                    System.out.print("Enter the appointment minute: ");
-                    int minute = scanner.nextInt();
-                    scanner.nextLine();
-
-                    LocalDateTime date = LocalDateTime.of(year,month,day,hours,minute);
-
-                    boolean add = appointmentController.scheduleAppointment(patientID, doctorID, roomID, date);
-                    if(add){
-                        // Show the apppointment ID
-                        System.out.println("Appointment ID: " + appointmentController.returnAppointmentID());
-                        System.out.println("The appointment has been added successfully.");
-                    }else{
-                        System.out.println("Failed to add appointment.");
-                    }
-                    
+                    // start interactive schedule appointment
+                    AppointmentController.interactiveScheduleAppointment(scanner);
                     pause();
                 }
                 case 2 -> {
@@ -410,7 +355,7 @@ public class Main {
                     System.out.print("Enter the appointmentID: ");
                     String appointmentID = scanner.nextLine();
 
-                    boolean removed = appointmentController.cancelAppointment(appointmentID);
+                    boolean removed = AppointmentController.cancelAppointment(appointmentID);
                     if(removed){
                         System.out.println("The appointment have been removed successfully.");
                     }else{
@@ -420,15 +365,15 @@ public class Main {
                 }
                 case 3 -> {
                     clearScreen();
-                    appointmentController.displayAllAppointment();
+                    AppointmentController.displayAllAppointment();
                     System.out.print("\nEnter appointmentID: ");
                     String appointmentID = scanner.nextLine();
 
                     System.out.print("Enter the new status: ");
                     String status = scanner.nextLine();
-                    boolean update = appointmentController.updateAppointmentStatus(appointmentID, status);
+                    boolean update = AppointmentController.updateAppointmentStatus(appointmentID, status);
                     if (update){
-                        System.out.println("The appiointment has been update succesfully.");
+                        System.out.println("The appointment has been updated successfully.");
                     }else{
                         System.out.println("The appointment failed to update.");
                     }
@@ -437,7 +382,7 @@ public class Main {
                 case 4 -> {
                     //View appointments
                     clearScreen();
-                    appointmentController.displayAllAppointment();
+                    AppointmentController.displayAllAppointment();
                     pause();
                 }
                 default -> System.out.println("Invalid choice!");
@@ -466,17 +411,17 @@ public class Main {
                     clearScreen();
                     System.out.print("Enter the patientID: ");
                     String patientID = scanner.nextLine();
-                    String recordID = medicalRecordController.createRecord(patientID);
+                    String recordID = MedicalRecordController.createRecord(patientID);
 
                     // Add diagnosis
                     System.out.print("Enter the diagnosis: ");
                     String diagnosis = scanner.nextLine();
-                    medicalRecordController.addDiagnosis(recordID, diagnosis);
+                    MedicalRecordController.addDiagnosis(recordID, diagnosis);
 
                     // Add prescription
                     System.out.print("Enter the prescription: ");
                     String prescription = scanner.nextLine();
-                    medicalRecordController.addPrescription(recordID, prescription);
+                    MedicalRecordController.addPrescription(recordID, prescription);
 
                     // Display the recordID
                     System.out.println("Record ID: " + recordID);
@@ -488,7 +433,7 @@ public class Main {
                     System.out.print("Enter the record ID: ");
                     String recordID = scanner.nextLine();
 
-                    boolean removed = medicalRecordController.removeRecord(recordID);
+                    boolean removed = MedicalRecordController.removeRecord(recordID);
                     if (removed) {
                         System.out.println("Medical record removed successfully.");
                     }else{
@@ -504,12 +449,12 @@ public class Main {
                     // Update diagnosis
                     System.out.print("Enter the new diagnosis: ");
                     String newDiagnosis = scanner.nextLine();
-                    medicalRecordController.addDiagnosis(recordID, newDiagnosis);
+                    MedicalRecordController.addDiagnosis(recordID, newDiagnosis);
 
                     // Update prescription
                     System.out.print("Enter the new prescription: ");
                     String newPrescription = scanner.nextLine();
-                    medicalRecordController.addPrescription(recordID, newPrescription);
+                    MedicalRecordController.addPrescription(recordID, newPrescription);
 
                     System.out.println("The record has been updated successfully.");
                 }
@@ -530,7 +475,7 @@ public class Main {
                 String name = scanner.nextLine();
                 clearScreen();
                 System.out.println("\n=== Search Results ===");
-                patientController.searchPatientsByName(name).forEach(
+                PatientController.searchPatientsByName(name).forEach(
                         patient -> System.out.println("ID: " + patient.getPersonID() + ", Name: " + patient.getName()));
             }
             case 2 -> {
@@ -538,7 +483,7 @@ public class Main {
                 String doctorName = scanner.nextLine();
                 clearScreen();
                 System.out.println("\n=== Search Results ===");
-                doctorController.searchDoctorsByName(doctorName).forEach(
+                DoctorController.searchDoctorsByName(doctorName).forEach(
                         doctor -> System.out.println("Dr. " + doctor.getName() + " - " + doctor.getSpecialization()));
             }
             case 3 -> {
@@ -546,7 +491,7 @@ public class Main {
                 String department = scanner.nextLine();
                 clearScreen();
                 System.out.println("\n=== Doctors by Department ===");
-                doctorController.getDoctorsByDepartment(department).forEach(
+                DoctorController.getDoctorsByDepartment(department).forEach(
                         doctor -> System.out.println("Dr. " + doctor.getName() + " - " + doctor.getSpecialization()));
             }
             case 4 -> {
@@ -555,7 +500,7 @@ public class Main {
                 scanner.nextLine();
                 clearScreen();
                 System.out.println("\n=== Doctors by Experience ===");
-                doctorController.getDoctorsByExperience(yearsOfExperience).forEach(doctor -> System.out
+                DoctorController.getDoctorsByExperience(yearsOfExperience).forEach(doctor -> System.out
                         .println("Dr. " + doctor.getName() + " - " + doctor.getYearsOfExperience() + " years"));
             }
             default -> System.out.println("Invalid choice!");
