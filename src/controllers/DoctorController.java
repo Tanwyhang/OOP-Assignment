@@ -82,7 +82,12 @@ public final class DoctorController {
         }
     }
 
-    private static Doctor findDoctorByID(String doctorID) {
+    //method to check whether the doctor exists
+    public static boolean doctorExists(String doctorID) {
+        return doctors.stream().anyMatch(doctor -> doctor.getPersonID().equals(doctorID));
+    }
+
+    public static Doctor findDoctorByID(String doctorID) {
         return doctors.stream()
             .filter(doctor -> doctor.getPersonID().equals(doctorID))
             .findFirst()

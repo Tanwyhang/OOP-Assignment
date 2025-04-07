@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import models.Room;
+import utils.StringUtils;
 
 public final class RoomController {
     private final static List<Room> rooms = new ArrayList<>();
@@ -60,6 +61,11 @@ public final class RoomController {
             .orElse(null);
     }
 
+    // return boolean whether the room is exist or not
+    public static boolean roomExists(String roomID) {
+        return rooms.stream().anyMatch(room -> room.getRoomID().equals(roomID));
+    }
+
     public static void saveRoomsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/rooms.csv"))) {
             for (Room room : rooms) {
@@ -91,7 +97,7 @@ public final class RoomController {
     }
 
     public static String displayAllRooms() {
-        System.out.println("\n=== All Rooms ===");
+        System.out.println(StringUtils.beautify("=== All Rooms ==="));
         if (rooms.isEmpty()) {
             System.out.println("No rooms available.");
         } else {

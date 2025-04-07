@@ -1,0 +1,29 @@
+MR0001,P0001,2025-04-08T10:00:00,Flu,Paracetamol,
+MR0002,P0002,2025-04-09T11:00:00,Diabetes,Insulin,
+MR0003,P0003,2025-04-10T09:30:00,Hypertension,Amlodipine,
+MR0004,P0004,2025-04-11T14:00:00,Asthma,Inhaler,
+MR0005,P0001,2025-04-09T11:30:00,Flu,Paracetamol,Rest and hydration
+MR0006,P0001,2025-04-10T14:00:00,Flu,Ibuprofen,Cold compress
+MR0007,P0001,2025-04-11T09:00:00,Flu,Decongestant,Steam inhalation
+MR0008,P0001,2025-04-12T16:30:00,Flu,Cough syrup,Bed rest
+MR0009,P0001,2025-04-13T10:00:00,Flu,Vitamin C,Fluid therapy
+MR0010,P0002,2025-04-10T13:00:00,Diabetes,Insulin,Blood sugar monitoring
+MR0011,P0002,2025-04-11T15:30:00,Diabetes,Metformin,Diet control
+MR0012,P0002,2025-04-12T11:00:00,Diabetes,Insulin,Exercise therapy
+MR0013,P0002,2025-04-13T14:30:00,Diabetes,Metformin,Foot care
+MR0014,P0002,2025-04-14T09:00:00,Diabetes,Insulin,Lifestyle counseling
+MR0015,P0003,2025-04-11T10:30:00,Hypertension,Amlodipine,Blood pressure monitoring
+MR0016,P0003,2025-04-12T14:00:00,Hypertension,Lisinopril,Diet modification
+MR0017,P0003,2025-04-13T11:30:00,Hypertension,Amlodipine,Stress management
+MR0018,P0003,2025-04-14T16:00:00,Hypertension,Lisinopril,Exercise program
+MR0019,P0003,2025-04-15T09:30:00,Hypertension,Amlodipine,Weight management
+MR0020,P0004,2025-04-12T15:30:00,Asthma,Inhaler,Breathing exercises
+MR0021,P0004,2025-04-13T10:00:00,Asthma,Corticosteroid,Trigger avoidance
+MR0022,P0004,2025-04-14T14:30:00,Asthma,Inhaler,Peak flow monitoring
+MR0023,P0004,2025-04-15T11:00:00,Asthma,Corticosteroid,Allergen control
+MR0024,P0004,2025-04-16T09:30:00,Asthma,Inhaler,Respiratory physiotherapy
+MR0025,P0005,2025-04-13T13:00:00,Allergy,Antihistamine,Allergen identification
+MR0026,P0005,2025-04-14T10:30:00,Allergy,Decongestant,Environmental control
+MR0027,P0005,2025-04-15T15:00:00,Allergy,Antihistamine,Immunotherapy
+MR0028,P0005,2025-04-16T11:30:00,Allergy,Nasal spray,Skin testing
+MR0029,P0005,2025-04-17T14:00:00,Allergy,Antihistamine,Prevention education

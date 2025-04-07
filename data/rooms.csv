@@ -11,5 +11,7 @@ R26,Emergency,Available
 R40,Ward,unavailable
 R94,Emergency,Available
 R92,Emergency,Available
-R95,Operation,Available
-R63,Ward,Available
+R63,Ward,unavailable
+R20,Operation,unavailable
+R78,Ward,Available
+R12,Emergency,Available

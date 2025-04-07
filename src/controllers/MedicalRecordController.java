@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import models.MedicalRecord;
+import utils.StringUtils;
 
 public final class MedicalRecordController {
     private final static List<MedicalRecord> records = new ArrayList<>();
@@ -14,11 +15,26 @@ public final class MedicalRecordController {
         loadRecordsFromFile();
     }
 
+    // generate unique record id, using while to prevent overlap
+    private static String generateUniqueRecordID() {
+        while (true) {
+            int id = (int) (Math.random() * 10000); // Generates a number between 0 and 9999
+            String candidate = "MR" + String.format("%04d", id);
+            if (!records.stream().anyMatch(record -> record.getRecordID().equals(candidate))) {
+                return candidate;
+            }
+        }
+    }
+
+    // create record using patient id
     public static String createRecord(String patientID) {
-        MedicalRecord record = new MedicalRecord("MR" + (records.size() + 1), LocalDateTime.now());
-        records.add(record);
+        String recordID = generateUniqueRecordID();
+        MedicalRecord newRecord = new MedicalRecord(recordID, LocalDateTime.now());
+        newRecord.setPatientID(patientID); // Set the patient ID
+
+        records.add(newRecord);
         saveRecordsToFile();
-        return record.getRecordID();
+        return recordID;
     }
 
     public static void addDiagnosis(String recordID, String diagnosis) {
@@ -29,7 +45,7 @@ public final class MedicalRecordController {
                 record.addDiagnosis(diagnosis);
                 saveRecordsToFile();
             });
-    }
+    }    
 
     public static void addPrescription(String recordID, String medication) {
         records.stream()
@@ -53,13 +69,50 @@ public final class MedicalRecordController {
         return records; // Implement filtering by patientID if needed
     }
 
+    public static List<MedicalRecord> getRecordsByPatientID(String patientID) {
+        List<MedicalRecord> filteredRecords = new ArrayList<>();
+        for (MedicalRecord record : records) {
+            if (patientID.equals(record.getPatientID())) {
+                filteredRecords.add(record);
+            }
+        }
+        return filteredRecords;
+    }
+
+    // display all records of a patient, make use of string builder, and stringutils beautify
+    public static void displayRecords(String patientID) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n=== Medical Records for Patient ").append(patientID).append(" ===\n");
+        List<MedicalRecord> patientRecords = getRecordsByPatientID(patientID);
+        if (patientRecords.isEmpty()) {
+            sb.append("No records found for this patient.\n");
+        } else {
+            for (MedicalRecord record : patientRecords) {
+                sb.append("Record ID: ").append(record.getRecordID()).append("\n")
+                  .append("Date Created: ").append(record.getDateCreated()).append("\n")
+                  .append("Diagnoses: ").append(String.join(", ", record.getDiagnoses())).append("\n")
+                  .append("Prescriptions: ").append(String.join(", ", record.getPrescriptions())).append("\n")
+                  .append("Treatments: ").append(String.join(", ", record.getTreatments())).append("\n\n");
+            }
+        }
+        System.out.println(StringUtils.beautify(sb.toString()));
+    }
+
+    // return if the record exists
+    public static boolean recordExists(String recordID) {
+        return records.stream().anyMatch(record -> record.getRecordID().equals(recordID));
+    }
+    
+
     public static void saveRecordsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/medical_records.csv"))) {
             for (MedicalRecord record : records) {
-                writer.write(record.getRecordID() + "," + record.getDateCreated() + "," +
-                        String.join(";", record.getDiagnoses()) + "," +
-                        String.join(";", record.getPrescriptions()) + "," +
-                        String.join(";", record.getTreatments()));
+                writer.write(record.getRecordID() + "," + 
+                             record.getPatientID() + "," + // Include patient ID
+                             record.getDateCreated() + "," +
+                             String.join(";", record.getDiagnoses()) + "," +
+                             String.join(";", record.getPrescriptions()) + "," +
+                             String.join(";", record.getTreatments()));
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -73,22 +126,34 @@ public final class MedicalRecordController {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    String[] data = line.split(",");
-                    MedicalRecord record = new MedicalRecord(data[0], LocalDateTime.parse(data[1]));
-                    for (String diagnosis : data[2].split(";")) {
-                        record.addDiagnosis(diagnosis);
+                    String[] data = line.split(",", -1); // Use -1 to include trailing empty fields
+                    if (data.length < 6) { // Ensure the record has at least 6 fields
+                        System.err.println("Skipping invalid record: " + line);
+                        continue;
                     }
-                    for (String prescription : data[3].split(";")) {
-                        record.addPrescription(prescription);
+                    try {
+                        String recordID = data[0];
+                        String patientID = data[1]; // Read patient ID
+                        LocalDateTime dateTime = LocalDateTime.parse(data[2]);
+                        String diagnoses = data[3];
+                        String prescriptions = data[4];
+                        String treatments = data[5];
+
+                        MedicalRecord record = new MedicalRecord(recordID, dateTime);
+                        record.setPatientID(patientID); // Set patient ID
+                        if (!diagnoses.isEmpty()) record.addDiagnosis(diagnoses);
+                        if (!prescriptions.isEmpty()) record.addPrescription(prescriptions);
+                        if (!treatments.isEmpty()) record.addTreatment(treatments);
+                        records.add(record);
+                    } catch (Exception e) {
+                        System.err.println("Error parsing record: " + line + " - " + e.getMessage());
                     }
-                    for (String treatment : data[4].split(";")) {
-                        record.addTreatment(treatment);
-                    }
-                    records.add(record);
                 }
             } catch (IOException e) {
                 System.err.println("Error loading medical records from file: " + e.getMessage());
             }
+        } else {
+            System.out.println("Medical records file not found. Starting with an empty record list.");
         }
     }
 }

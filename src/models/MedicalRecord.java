@@ -6,6 +6,7 @@ import java.util.List;
 
 public class MedicalRecord {
     private String recordID;
+    private String patientID;
     private LocalDateTime dateCreated;
     private List<String> diagnoses;
     private List<String> prescriptions;
@@ -32,4 +33,13 @@ public class MedicalRecord {
     public List<String> getDiagnoses() { return diagnoses; }
     public List<String> getPrescriptions() { return prescriptions; }
     public List<String> getTreatments() { return treatments; }
+
+    // get patient id
+    public String getPatientID() { return patientID; }
+    // set patient id
+    public void setPatientID(String patientID) { this.patientID = patientID; }
+
+    public void updateDiagnosis(String oldDiagnosis, String newDiagnosis) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

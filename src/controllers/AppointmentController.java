@@ -65,104 +65,106 @@ public final class AppointmentController {
      */
     public static boolean interactiveScheduleAppointment(Scanner scanner) {
         System.out.println("\n=== Schedule New Appointment ===");
-        System.out.println("(Type 'cancel' at any prompt to cancel the appointment scheduling process)\n\n");
-        // show all patients
-        PatientController.displayAllPatients();
+        System.out.println("(Type '0' at any prompt to cancel the appointment scheduling process)\n\n");
+
         // Get patient ID
-        System.out.print("Enter patient ID (format: Pxxxx): ");
-        String patientID = scanner.nextLine().trim();
-        if (patientID.equalsIgnoreCase("cancel")) {
-            System.out.println("Appointment scheduling cancelled.");
-            return false;
+        String patientID;
+        while (true) {
+            PatientController.displayAllPatients();
+            System.out.print("Enter patient ID (format: Pxxxx or 0 to cancel): ");
+            patientID = scanner.nextLine().trim();
+            if (patientID.equals("0")) {
+                System.out.println("Appointment scheduling cancelled.");
+                return false;
+            }
+            if (PatientController.isPatientExist(patientID)) break;
+            System.out.println("Invalid patient ID. Please try again.");
         }
-        
-        
-        // show available doctors
-        DoctorController.displayAllDoctors();        
+
         // Get doctor ID
-        System.out.print("\n\nEnter doctor ID (format: Dxxxx): ");
-        String doctorID = scanner.nextLine().trim();
-        if (doctorID.equalsIgnoreCase("cancel")) {
-            System.out.println("Appointment scheduling cancelled.");
-            return false;
+        String doctorID;
+        while (true) {
+            DoctorController.displayAllDoctors();
+            System.out.print("Enter doctor ID (format: Dxxxx or 0 to cancel): ");
+            doctorID = scanner.nextLine().trim();
+            if (doctorID.equals("0")) {
+                System.out.println("Appointment scheduling cancelled.");
+                return false;
+            }
+            if (DoctorController.doctorExists(doctorID)) break;
+            System.out.println("Invalid doctor ID. Please try again.");
         }
-        
+
         // Get room ID
-        RoomController.displayAllRooms();
-        System.out.print("Enter room ID (format: Rxx): ");
-        String roomID = scanner.nextLine().trim();
-        if (roomID.equalsIgnoreCase("cancel")) {
-            System.out.println("Appointment scheduling cancelled.");
-            return false;
+        String roomID;
+        while (true) {
+            RoomController.displayAllRooms();
+            System.out.print("Enter room ID (format: Rxx or 0 to cancel): ");
+            roomID = scanner.nextLine().trim();
+            if (roomID.equals("0")) {
+                System.out.println("Appointment scheduling cancelled.");
+                return false;
+            }
+            if (RoomController.roomExists(roomID)) break;
+            System.out.println("Invalid room ID. Please try again.");
         }
-        
-        // Show available dates
-        System.out.println("\n=== Available Dates ===");
-        List<LocalDate> availableDates = generateAvailableDates();
-        for (int i = 0; i < availableDates.size(); i++) {
-            System.out.printf("%d. %s\n", i + 1, DateTimeUtils.formatDate(availableDates.get(i)));
-        }
-        
-        System.out.print("\nEnter the date number or 'cancel' to cancel: ");
-        String dateInput = scanner.nextLine().trim();
-        if (dateInput.equalsIgnoreCase("cancel")) {
-            System.out.println("Appointment scheduling cancelled.");
-            return false;
-        }
-        
+
+        // Get appointment date
         LocalDate selectedDate;
-        try {
-            int dateIndex = Integer.parseInt(dateInput) - 1;
-            if (dateIndex >= 0 && dateIndex < availableDates.size()) {
-                selectedDate = availableDates.get(dateIndex);
-            } else {
-                System.out.println("Invalid selection. Appointment scheduling cancelled.");
+        while (true) {
+            System.out.println("\n=== Available Dates ===");
+            List<LocalDate> availableDates = generateAvailableDates();
+            for (int i = 0; i < availableDates.size(); i++) {
+                System.out.printf("%d. %s\n", i + 1, DateTimeUtils.formatDate(availableDates.get(i)));
+            }
+            System.out.print("Enter the date number (or 0 to cancel): ");
+            String dateInput = scanner.nextLine().trim();
+            if (dateInput.equals("0")) {
+                System.out.println("Appointment scheduling cancelled.");
                 return false;
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Appointment scheduling cancelled.");
-            return false;
+            try {
+                int dateIndex = Integer.parseInt(dateInput) - 1;
+                if (dateIndex >= 0 && dateIndex < availableDates.size()) {
+                    selectedDate = availableDates.get(dateIndex);
+                    break;
+                }
+            } catch (NumberFormatException ignored) {}
+            System.out.println("Invalid selection. Please try again.");
         }
-        
-        // Show available times
-        System.out.println("\n=== Available Times for " + DateTimeUtils.formatDate(selectedDate) + " ===");
-        List<LocalTime> availableTimes = generateAvailableTimes();
-        for (int i = 0; i < availableTimes.size(); i++) {
-            System.out.printf("%d. %s\n", i + 1, availableTimes.get(i).format(DateTimeFormatter.ofPattern("HH:mm")));
-        }
-        
-        System.out.print("\nEnter the time number or 'cancel' to cancel: ");
-        String timeInput = scanner.nextLine().trim();
-        if (timeInput.equalsIgnoreCase("cancel")) {
-            System.out.println("Appointment scheduling cancelled.");
-            return false;
-        }
-        
+
+        // Get appointment time
         LocalTime selectedTime;
-        try {
-            int timeIndex = Integer.parseInt(timeInput) - 1;
-            if (timeIndex >= 0 && timeIndex < availableTimes.size()) {
-                selectedTime = availableTimes.get(timeIndex);
-            } else {
-                System.out.println("Invalid selection. Appointment scheduling cancelled.");
+        while (true) {
+            System.out.println("\n=== Available Times for " + DateTimeUtils.formatDate(selectedDate) + " ===");
+            List<LocalTime> availableTimes = generateAvailableTimes();
+            for (int i = 0; i < availableTimes.size(); i++) {
+                System.out.printf("%d. %s\n", i + 1, availableTimes.get(i).format(DateTimeFormatter.ofPattern("HH:mm")));
+            }
+            System.out.print("Enter the time number (or 0 to cancel): ");
+            String timeInput = scanner.nextLine().trim();
+            if (timeInput.equals("0")) {
+                System.out.println("Appointment scheduling cancelled.");
                 return false;
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Appointment scheduling cancelled.");
-            return false;
+            try {
+                int timeIndex = Integer.parseInt(timeInput) - 1;
+                if (timeIndex >= 0 && timeIndex < availableTimes.size()) {
+                    selectedTime = availableTimes.get(timeIndex);
+                    break;
+                }
+            } catch (NumberFormatException ignored) {}
+            System.out.println("Invalid selection. Please try again.");
         }
-        
-        // Use DateTimeUtils to combine date and time
-        LocalDateTime appointmentDateTime = DateTimeUtils.combineDateTime(selectedDate, selectedTime);
-        
+
         // Confirm appointment details
+        LocalDateTime appointmentDateTime = DateTimeUtils.combineDateTime(selectedDate, selectedTime);
         System.out.println("\n=== Appointment Details ===");
         System.out.println("Patient ID: " + patientID);
         System.out.println("Doctor ID: " + doctorID);
         System.out.println("Room ID: " + roomID);
         System.out.println("Date & Time: " + DateTimeUtils.formatDateTime(appointmentDateTime));
-        System.out.print("\nConfirm appointment (Y/N)? ");
-        
+        System.out.print("Confirm appointment (Y/N)? ");
         String confirmation = scanner.nextLine().trim();
         if (confirmation.equalsIgnoreCase("Y")) {
             boolean success = scheduleAppointment(patientID, doctorID, roomID, appointmentDateTime);
@@ -171,12 +173,11 @@ public final class AppointmentController {
                 return true;
             } else {
                 System.out.println("Failed to schedule appointment.");
-                return false;
             }
         } else {
             System.out.println("Appointment scheduling cancelled.");
-            return false;
         }
+        return false;
     }
 
     // Helper method to generate a list of available dates (next 7 days)
