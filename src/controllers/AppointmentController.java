@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.Scanner;
 import models.Appointment;
 import utils.DateTimeUtils;
+import utils.StringUtils;
 
 
 public final class AppointmentController {
@@ -40,6 +41,50 @@ public final class AppointmentController {
         
         return appointmentID;
     }
+
+    // Search by date range: today week month
+    public static void searchAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
+        System.out.printf("%-15s %-20s %-10s %-15s %-10s\n",
+                "Appointment ID", "Date & Time", "Status", "Doctor", "Room");
+        
+        boolean found = false;
+        StringBuilder resultBuilder = new StringBuilder();
+        for (Appointment appointment : appointments) {
+            LocalDate appointmentDate = appointment.getDate().toLocalDate();
+            if ((appointmentDate.isEqual(startDate) || appointmentDate.isEqual(endDate) || 
+                (appointmentDate.isAfter(startDate) && appointmentDate.isBefore(endDate)))) {
+                resultBuilder.append(appointment.toString()).append("\n");
+                found = true;
+            }
+        }
+        
+        if (!found) {
+            System.out.println("No appointments found in the specified date range.");
+        } else {
+            System.out.println(StringUtils.beautify(resultBuilder.toString()));
+        }
+    }
+
+    public static void searchAppointmentsByStatus(String status) {
+        System.out.printf("%-15s %-20s %-10s %-15s %-10s\n",
+                "Appointment ID", "Date & Time", "Status", "Doctor", "Room");
+        
+        boolean found = false;
+        StringBuilder resultBuilder = new StringBuilder();
+        for (Appointment appointment : appointments) {
+            if (appointment.getStatus().toLowerCase().contains(status.toLowerCase())) {
+            resultBuilder.append(appointment.toString()).append("\n");
+            found = true;
+            }
+        }
+        
+        if (!found) {
+            System.out.println("No appointments found with status: " + status);
+        } else {
+            System.out.println(StringUtils.beautify(resultBuilder.toString()));
+        }
+    }
+
 
     public String returnAppointmentID(){
         return "A" + (appointments.size());
@@ -223,17 +268,18 @@ public final class AppointmentController {
             .orElse(false);
     }
 
-    public static void displayAllAppointment(){
-        System.out.printf("%-20s %-20s %-10s\n\n","AppointmentID","Date","Status");
-        if(appointments.isEmpty()){
+    public static void displayAllAppointment() {
+        System.out.printf("%-15s %-20s %-10s %-15s %-10s\n",
+                "Appointment ID", "Date & Time", "Status", "Doctor", "Room");
+        
+        if (appointments.isEmpty()) {
             System.out.println("No appointments scheduled");
-        }else{
-            for(Appointment appointment : appointments){
-                System.out.printf("%-20s %-20s %-10s\n",
-                    appointment.getAppointmentID(),
-                    appointment.getDate().format(displayFormatter),
-                    appointment.getStatus());
+        } else {
+            StringBuilder resultBuilder = new StringBuilder();
+            for (Appointment appointment : appointments) {
+                resultBuilder.append(appointment.toString()).append("\n");
             }
+            System.out.println(resultBuilder.toString());
         }
     }
     

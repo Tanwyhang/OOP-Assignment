@@ -144,4 +144,126 @@ public final class RoomController {
         }
         return null;
     }
+
+    public static void searchRoomsByType(String roomType) {
+        // print rooms given type
+        System.out.println(StringUtils.beautify("=== Search Rooms By Type ==="));
+        // use the same method as display all rooms to display only the rooms of the given type
+        if (rooms.isEmpty()) {
+            System.out.println("No rooms available.");
+        } else {
+            // Filter rooms by type
+            List<Room> filteredRooms = rooms.stream()
+            .filter(room -> room.getType().equals(roomType))
+            .toList();
+
+            if (filteredRooms.isEmpty()) {
+            System.out.println("No rooms found of type: " + roomType);
+            return;
+            }
+
+            int columnCount = 3;
+            for (int i = 0; i < filteredRooms.size(); i += columnCount) {
+            int end = Math.min(i + columnCount, filteredRooms.size());
+            List<Room> rowRooms = filteredRooms.subList(i, end);
+        
+            // Prepare each line part for all rooms in the current row
+            List<String> topParts = new ArrayList<>();
+            List<String> line1Parts = new ArrayList<>();
+            List<String> line2Parts = new ArrayList<>();
+            List<String> bottomParts = new ArrayList<>();
+        
+            for (Room room : rowRooms) {
+                // Room availability and color
+                String availability = room.getStatus().equalsIgnoreCase("available") ? "Available" : "Occupied";
+                String color = availability.equalsIgnoreCase("Available") ? "\u001B[32m" : "\u001B[31m";
+                String reset = "\u001B[0m";
+        
+                // Top and bottom border parts
+                topParts.add("     +-----------------+");
+                bottomParts.add("     +-----------------+");
+        
+                // Line 1: Room ID and Availability
+                String roomID = color + room.getRoomID() + reset;
+                String availText = color + availability + reset;
+                String line1 = String.format("     | %-12s[%18s]  |", roomID, availText);
+                line1Parts.add(line1);
+        
+                // Line 2: Room Type
+                String typeText = "Type: " + room.getType();
+                String line2 = String.format("     | %-16s|", typeText);
+                line2Parts.add(line2);
+            }
+        
+            // Print combined lines for the current row
+            System.out.println(String.join("   ", topParts));
+            System.out.println(String.join("   ", line1Parts));
+            System.out.println(String.join("   ", line2Parts));
+            System.out.println(String.join("   ", bottomParts));
+            System.out.println(); // Empty line after each row
+            }
+        }
+        System.out.println("Total number of rooms of type " + roomType + ": " + rooms.stream().filter(room -> room.getType().equals(roomType)).count());
+    }
+
+    public static void searchRoomsByStatus(String status) {
+        // print rooms given status
+        System.out.println(StringUtils.beautify("=== Search Rooms By Status ==="));
+        // use the same method as display all rooms to display only the rooms of the given status
+        if (rooms.isEmpty()) {
+            System.out.println("No rooms available.");
+        } else {
+            // Filter rooms by status
+            List<Room> filteredRooms = rooms.stream()
+            .filter(room -> room.getStatus().equals(status))
+            .toList();
+
+            if (filteredRooms.isEmpty()) {
+            System.out.println("No rooms found with status: " + status);
+            return;
+            }
+
+            int columnCount = 3;
+            for (int i = 0; i < filteredRooms.size(); i += columnCount) {
+            int end = Math.min(i + columnCount, filteredRooms.size());
+            List<Room> rowRooms = filteredRooms.subList(i, end);
+        
+            // Prepare each line part for all rooms in the current row
+            List<String> topParts = new ArrayList<>();
+            List<String> line1Parts = new ArrayList<>();
+            List<String> line2Parts = new ArrayList<>();
+            List<String> bottomParts = new ArrayList<>();
+        
+            for (Room room : rowRooms) {
+                // Room availability and color
+                String availability = room.getStatus().equalsIgnoreCase("available") ? "Available" : "Occupied";
+                String color = availability.equalsIgnoreCase("Available") ? "\u001B[32m" : "\u001B[31m";
+                String reset = "\u001B[0m";
+        
+                // Top and bottom border parts
+                topParts.add("     +-----------------+");
+                bottomParts.add("     +-----------------+");
+        
+                // Line 1: Room ID and Availability
+                String roomID = color + room.getRoomID() + reset;
+                String availText = color + availability + reset;
+                String line1 = String.format("     | %-12s[%18s]  |", roomID, availText);
+                line1Parts.add(line1);
+        
+                // Line 2: Room Type
+                String typeText = "Type: " + room.getType();
+                String line2 = String.format("     | %-16s|", typeText);
+                line2Parts.add(line2);
+            }
+        
+            // Print combined lines for the current row
+            System.out.println(String.join("   ", topParts));
+            System.out.println(String.join("   ", line1Parts));
+            System.out.println(String.join("   ", line2Parts));
+            System.out.println(String.join("   ", bottomParts));
+            System.out.println(); // Empty line after each row
+            }
+        }
+        System.out.println("Total number of rooms with status " + status + ": " + rooms.stream().filter(room -> room.getStatus().equals(status)).count());
+    }
 }   

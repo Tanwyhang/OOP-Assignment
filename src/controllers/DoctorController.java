@@ -6,11 +6,26 @@ import java.util.List;
 import java.util.Random;
 import models.Doctor;
 
-public final class DoctorController {
+public final class DoctorController implements ControllerInterface<Doctor> {
     private final static List<Doctor> doctors = new ArrayList<>();
     
     static  {
         loadDoctorsFromFile();
+    }
+
+    @Override
+    public void saveToFile() {
+        saveDoctorsToFile();
+    }
+
+    @Override
+    public void loadFromFile() {
+        loadDoctorsFromFile();
+    }
+
+    @Override
+    public List<Doctor> getAll() {
+        return new ArrayList<>(doctors);
     }
 
     public static boolean hireDoctor(String name, String address, String phoneNumber, char gender, int age, String department, String shift, int yearsOfExperience, String specialization) {
@@ -26,23 +41,114 @@ public final class DoctorController {
     public static void viewDoctorDetails(String personID) {
         Doctor doctor = findDoctorByID(personID);
         if (doctor != null) {
-            // Show doctor details
             System.out.println("\n=== Doctor Details ===\n");
-            System.out.println("Doctor ID          : " + doctor.getPersonID());
-            System.out.println("Name               : " + doctor.getName());
-            System.out.println("Address            : " + doctor.getAddress());
-            System.out.println("Phone Number       : " + doctor.getPhoneNumber());
-            System.out.println("Gender             : " + doctor.getGender());
-            System.out.println("Age                : " + doctor.getAge());
-            System.out.println("Department         : " + doctor.getDepartment());
-            System.out.println("Shift              : " + doctor.getShift());
-            System.out.println("Years of Experience: " + doctor.getYearsOfExperience());
-            System.out.println("Specialization     : " + doctor.getSpecialization());
+            System.out.println(doctor.toString());
         } else {
             System.out.println("Doctor not found.");
         }
     }
 
+    // SEARCH METHODS
+
+    static String getDoctorName(String doctorID) {
+        return doctors.stream()
+            .filter(doctor -> doctor.getPersonID().equals(doctorID))
+            .map(Doctor::getName)
+            .findFirst()
+            .orElse(null);
+    }
+    
+    public static Doctor findDoctorByID(String doctorID) {
+        return doctors.stream()
+            .filter(doctor -> doctor.getPersonID().equals(doctorID))
+            .findFirst()
+            .orElse(null);
+    }
+
+    public static List<Doctor> searchDoctorsByName(String doctorName) {
+        return doctors.stream()
+            .filter(d -> d.getName().toLowerCase().contains(doctorName.toLowerCase()))
+            .toList();
+    }
+
+    public static List<Doctor> getDoctorsByDepartment(String department) {
+        return doctors.stream()
+            .filter(d -> d.getDepartment().equalsIgnoreCase(department))
+            .toList();
+    }
+
+    public static List<Doctor> getDoctorsByExperience(int yearsOfExperience) {
+        return doctors.stream()
+            .filter(d -> d.getYearsOfExperience() >= yearsOfExperience)
+            .toList();
+    }
+
+    public static List<Doctor> getDoctorsBySpecialization(String specialization) {
+        return doctors.stream()
+            .filter(doctor -> doctor.getSpecialization().contains(specialization))
+            .toList();
+    }
+
+    public static List<Doctor> searchDoctorsByAgeRange(int minAge, int maxAge) {
+        return doctors.stream()
+            .filter(doctor -> doctor.getAge() >= minAge && doctor.getAge() <= maxAge)
+            .toList();
+    }
+
+    public static List<Doctor> searchDoctorsByGender(char gender) {
+        return doctors.stream()
+            .filter(doctor -> doctor.getGender() == gender)
+            .toList();
+    }
+
+    public static List<Doctor> getDoctorsByShift(String shift) {
+        return doctors.stream()
+            .filter(doctor -> doctor.getShift().equalsIgnoreCase(shift))
+            .toList();
+    }
+
+    // UPDATE METHODS
+    public static void updateSpecialization(String doctorID, String specialization) {
+        doctors.stream()
+            .filter(doctor -> doctor.getPersonID().equals(doctorID))
+            .findFirst()
+            .ifPresent(doctor -> {
+                doctor.setSpecialization(specialization);
+                saveDoctorsToFile();
+            });
+    }
+
+    public static void updateDepartment(String doctorID, String department) {
+        doctors.stream()
+            .filter(doctor -> doctor.getPersonID().equals(doctorID))
+            .findFirst()
+            .ifPresent(doctor -> {
+                doctor.setDepartment(department);
+                saveDoctorsToFile();
+            });
+    }
+
+    public static void updateShift(String doctorID, String shift) {
+        doctors.stream()
+            .filter(doctor -> doctor.getPersonID().equals(doctorID))
+            .findFirst()
+            .ifPresent(doctor -> {
+                doctor.setShift(shift);
+                saveDoctorsToFile();
+            });
+    }
+
+    public static void updateExperience(String doctorID, int yearsOfExperience) {
+        doctors.stream()
+            .filter(doctor -> doctor.getPersonID().equals(doctorID))
+            .findFirst()
+            .ifPresent(doctor -> {
+                doctor.setYearsOfExperience(yearsOfExperience);
+                saveDoctorsToFile();
+            });
+    }
+
+    // OTHER METHODS
     private static String generateUniquePersonID() {
         Random random = new Random();
         while (true) {
@@ -62,16 +168,6 @@ public final class DoctorController {
         return removed;
     }
 
-    public static void updateSpecialization(String doctorID, String specialization) {
-        doctors.stream()
-            .filter(doctor -> doctor.getPersonID().equals(doctorID))
-            .findFirst()
-            .ifPresent(doctor -> {
-                doctor.setSpecialization(specialization);
-                saveDoctorsToFile();
-            });
-    }
-
     public static void displayAllDoctors() {
         System.out.println("\n=== All Doctors ===\n");
         if (doctors.isEmpty()) {
@@ -82,34 +178,9 @@ public final class DoctorController {
         }
     }
 
-    //method to check whether the doctor exists
+    // Method to check whether the doctor exists
     public static boolean doctorExists(String doctorID) {
         return doctors.stream().anyMatch(doctor -> doctor.getPersonID().equals(doctorID));
-    }
-
-    public static Doctor findDoctorByID(String doctorID) {
-        return doctors.stream()
-            .filter(doctor -> doctor.getPersonID().equals(doctorID))
-            .findFirst()
-            .orElse(null);
-    }
-
-    public static List<Doctor> searchDoctorsByName(String doctorName) {
-        return doctors.stream()
-            .filter(d -> d.getName().equalsIgnoreCase(doctorName))
-            .toList();
-    }
-
-    public static List<Doctor> getDoctorsByDepartment(String department) {
-        return doctors.stream()
-            .filter(d -> d.getDepartment().equalsIgnoreCase(department))
-            .toList();
-    }
-
-    public static List<Doctor> getDoctorsByExperience(int yearsOfExperience) {
-        return doctors.stream()
-            .filter(d -> d.getYearsOfExperience() >= yearsOfExperience)
-            .toList();
     }
 
     // FILE IO HANDLING
@@ -134,11 +205,18 @@ public final class DoctorController {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] data = line.split(",");
-                    doctors.add(new Doctor(data[0], data[1], data[2], data[3], data[4].charAt(0), Integer.parseInt(data[5]),
-                            data[6], data[7], Integer.parseInt(data[8]), data[9]));
+                    // Ensure the data array has the expected number of elements
+                    if (data.length == 10) {
+                        doctors.add(new Doctor(data[0], data[1], data[2], data[3], data[4].charAt(0), Integer.parseInt(data[5]),
+                                data[6], data[7], Integer.parseInt(data[8]), data[9]));
+                    } else {
+                        System.err.println("Invalid data format in line: " + line);
+                    }
                 }
             } catch (IOException e) {
                 System.err.println("Error loading doctors from file: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.err.println("Error parsing number in file: " + e.getMessage());
             }
         }
     }

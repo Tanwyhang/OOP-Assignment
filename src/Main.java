@@ -1,7 +1,10 @@
 import controllers.*;
 import java.io.Console;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
+import models.Doctor;
 import utils.StringConstants;
 import utils.StringUtils;
 import utils.StringUtils.BorderColor;
@@ -51,7 +54,7 @@ public class Main {
                 System.out.print("Choose an option: ");
                 try {
                     choice = Integer.parseInt(scanner.nextLine());
-                    if (choice >= 0 && choice <= 7) { // Valid choices are between 0 and 7 inclusive
+                    if (choice >= 0 && choice <= 8) { // Valid choices are between 0 and 7 inclusive
                         break;
                     } else {
                         System.out.println(StringUtils.beautify("Error: Choice must be between 0-8. Please try again.", BorderColor.RED));
@@ -303,20 +306,24 @@ public class Main {
                 case 0 -> {
                     showMainMenu();
                 } // Exit to main menu
-                  // Add Doctor
+                // Add Doctor
                 case 1 -> {
                     clearScreen();
-                    String name, address, phoneNumber, department, shift, specialization;
-                    int age, yearsOfExperience;
-                    char gender;
+                    // prints sample input data
+                    System.out.println(StringConstants.DOCTOR_SAMPLE_DATA);
+                    String name = null, address = null, phoneNumber = null, department = null, shift = null, specialization = null;
+                    int age = 0, yearsOfExperience = 0;
+                    char gender = 0;
+                    boolean in_progress = true;
 
                     // Validate and get doctor name
-                    while (true) {
+                    while (in_progress) {
                         System.out.print("Enter doctor name (e.g., John Doe) or type 'cancel' to abort: ");
                         name = scanner.nextLine();
                         if (name.equalsIgnoreCase("cancel")) {
                             System.out.println("Operation canceled.");
-                            return;
+                            in_progress = false;
+                            break;
                         }
                         if (name.trim().isEmpty()) {
                             System.out.println("Error: Name cannot be empty. Please try again.");
@@ -326,12 +333,13 @@ public class Main {
                     }
 
                     // Validate and get doctor age
-                    while (true) {
+                    while (in_progress) {
                         System.out.print("Enter doctor age (e.g., 35) or type 'cancel' to abort: ");
                         String input = scanner.nextLine();
                         if (input.equalsIgnoreCase("cancel")) {
                             System.out.println("Operation canceled.");
-                            return;
+                            in_progress = false;
+                            break;
                         }
                         try {
                             age = Integer.parseInt(input);
@@ -346,12 +354,13 @@ public class Main {
                     }
 
                     // Validate and get doctor gender
-                    while (true) {
+                    while (in_progress) {
                         System.out.print("Enter doctor gender (M/F) or type 'cancel' to abort: ");
                         String genderInput = scanner.nextLine();
                         if (genderInput.equalsIgnoreCase("cancel")) {
                             System.out.println("Operation canceled.");
-                            return;
+                            in_progress = false;
+                            break;
                         }
                         if (genderInput.equalsIgnoreCase("M") || genderInput.equalsIgnoreCase("F")) {
                             gender = genderInput.toUpperCase().charAt(0);
@@ -362,12 +371,13 @@ public class Main {
                     }
 
                     // Validate and get doctor address
-                    while (true) {
+                    while (in_progress) {
                         System.out.print("Enter doctor address (e.g., 123 Main St, City) or type 'cancel' to abort: ");
                         address = scanner.nextLine();
                         if (address.equalsIgnoreCase("cancel")) {
                             System.out.println("Operation canceled.");
-                            return;
+                            in_progress = false;
+                            break;
                         }
                         if (address.trim().isEmpty()) {
                             System.out.println("Error: Address cannot be empty. Please try again.");
@@ -377,12 +387,13 @@ public class Main {
                     }
 
                     // Validate and get doctor phone number
-                    while (true) {
+                    while (in_progress) {
                         System.out.print("Enter doctor phone number (e.g., 1234567890) or type 'cancel' to abort: ");
                         phoneNumber = scanner.nextLine();
                         if (phoneNumber.equalsIgnoreCase("cancel")) {
                             System.out.println("Operation canceled.");
-                            return;
+                            in_progress = false;
+                            break;
                         }
                         if (phoneNumber.trim().isEmpty() || !phoneNumber.matches("\\d+")) {
                             System.out.println("Error: Phone number must be numeric and cannot be empty. Please try again.");
@@ -392,12 +403,13 @@ public class Main {
                     }
 
                     // Validate and get doctor department
-                    while (true) {
+                    while (in_progress) {
                         System.out.print("Enter doctor department (e.g., Cardiology) or type 'cancel' to abort: ");
                         department = scanner.nextLine();
                         if (department.equalsIgnoreCase("cancel")) {
                             System.out.println("Operation canceled.");
-                            return;
+                            in_progress = false;
+                            break;
                         }
                         if (department.trim().isEmpty()) {
                             System.out.println("Error: Department cannot be empty. Please try again.");
@@ -406,13 +418,15 @@ public class Main {
                         }
                     }
 
+
                     // Validate and get doctor shift
-                    while (true) {
+                    while (in_progress) {
                         System.out.print("Enter doctor shift (e.g., Morning, Evening) or type 'cancel' to abort: ");
                         shift = scanner.nextLine();
                         if (shift.equalsIgnoreCase("cancel")) {
                             System.out.println("Operation canceled.");
-                            return;
+                            in_progress = false;
+                            break;
                         }
                         if (shift.trim().isEmpty()) {
                             System.out.println("Error: Shift cannot be empty. Please try again.");
@@ -422,12 +436,13 @@ public class Main {
                     }
 
                     // Validate and get doctor years of experience
-                    while (true) {
+                    while (in_progress) {
                         System.out.print("Enter doctor years of experience (e.g., 10) or type 'cancel' to abort: ");
                         String input = scanner.nextLine();
                         if (input.equalsIgnoreCase("cancel")) {
                             System.out.println("Operation canceled.");
-                            return;
+                            in_progress = false;
+                            break;
                         }
                         try {
                             yearsOfExperience = Integer.parseInt(input);
@@ -442,12 +457,13 @@ public class Main {
                     }
 
                     // Validate and get doctor specialization
-                    while (true) {
+                    while (in_progress) {
                         System.out.print("Enter doctor specialization (e.g., Surgeon) or type 'cancel' to abort: ");
                         specialization = scanner.nextLine();
                         if (specialization.equalsIgnoreCase("cancel")) {
                             System.out.println("Operation canceled.");
-                            return;
+                            in_progress = false;
+                            break;
                         }
                         if (specialization.trim().isEmpty()) {
                             System.out.println("Error: Specialization cannot be empty. Please try again.");
@@ -457,9 +473,11 @@ public class Main {
                     }
 
                     // Add doctor using validated inputs
-                    DoctorController.hireDoctor(name, address, phoneNumber, gender, age, department, shift,
+                    if (in_progress) {
+                        DoctorController.hireDoctor(name, address, phoneNumber, gender, age, department, shift,
                             yearsOfExperience, specialization);
-                    System.out.println("Doctor added successfully!");
+                        System.out.println("Doctor added successfully!");
+                    }
                     pause();
                 }
                 // Remove Doctor
@@ -467,7 +485,7 @@ public class Main {
                     clearScreen();
                     DoctorController.displayAllDoctors();
                     
-                    String doctorID = getValidDoctorID("Enter doctor ID to remove (or type 'cancel' to abort): ");
+                    String doctorID = getValidDoctorID("Enter doctor ID to remove (or type '0' to abort): ");
                     if (doctorID != null) {
                         if (DoctorController.removeDoctor(doctorID)) {
                             System.out.println("Doctor removed successfully!");
@@ -475,7 +493,7 @@ public class Main {
                             System.out.println("Doctor not found!");
                         }
                     } else {
-                        System.out.println("Operation canceled.");
+                        System.out.println(StringUtils.beautify("Operation cancelled", BorderColor.RED));
                     }
                     pause();
                 }
@@ -483,19 +501,80 @@ public class Main {
                 case 3 -> {
                     clearScreen();
                     DoctorController.displayAllDoctors();
-                    
-                    String doctorID = getValidDoctorID("Enter doctor ID to update (or type 'cancel' to abort): ");
-                    if (doctorID != null) {
-                        String specialization = getValidInput("Enter new specialization (or type 'cancel' to abort): ", "Specialization");
-                        if (specialization != null) {
-                            DoctorController.updateSpecialization(doctorID, specialization);
-                            System.out.println("Doctor specialization updated successfully!");
-                        } else {
-                            System.out.println("Operation canceled.");
+                    System.out.println(StringConstants.DOCTOR_SAMPLE_DATA);
+
+                    String doctorID = getValidInput("Enter doctor ID to update (or type '0' to abort): ", "Doctor ID");
+                    if (doctorID == null) {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                        pause();
+                        break;
+                    }
+
+                    // Update specialization
+                    System.out.print("Enter new specialization (leave blank to skip, or type '0' to abort): ");
+                    String specialization = scanner.nextLine();
+                    if (specialization.equals("0")) {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                        pause();
+                        break;
+                    }
+                    if (!specialization.isBlank()) {
+                        DoctorController.updateSpecialization(doctorID, specialization);
+                        System.out.println(StringUtils.beautify("Doctor specialization updated successfully!"));
+                    } else {
+                        System.out.println("Specialization update skipped.");
+                    }
+
+                    // Update department
+                    System.out.print("Enter new department (leave blank to skip, or type '0' to abort): ");
+                    String department = scanner.nextLine();
+                    if (department.equals("0")) {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                        pause();
+                        break;
+                    }
+                    if (!department.isBlank()) {
+                        DoctorController.updateDepartment(doctorID, department);
+                        System.out.println(StringUtils.beautify("Doctor department updated successfully!"));
+                    } else {
+                        System.out.println("Department update skipped.");
+                    }
+
+                    // Update shift
+                    System.out.print("Enter new shift (leave blank to skip, or type '0' to abort): ");
+                    String shift = scanner.nextLine();
+                    if (shift.equals("0")) {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                        pause();
+                        break;
+                    }
+                    if (!shift.isBlank()) {
+                        DoctorController.updateShift(doctorID, shift);
+                        System.out.println(StringUtils.beautify("Doctor shift updated successfully!"));
+                    } else {
+                        System.out.println("Shift update skipped.");
+                    }
+
+                    // Update years of experience
+                    System.out.print("Enter new years of experience (leave blank to skip, or type '0' to abort): ");
+                    String experienceInput = scanner.nextLine();
+                    if (experienceInput.equals("0")) {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                        pause();
+                        break;
+                    }
+                    if (!experienceInput.isBlank()) {
+                        try {
+                            int yearsOfExperience = Integer.parseInt(experienceInput);
+                            DoctorController.updateExperience(doctorID, yearsOfExperience);
+                            System.out.println(StringUtils.beautify("Doctor years of experience updated successfully!"));
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input for years of experience. Update skipped.");
                         }
                     } else {
-                        System.out.println("Operation canceled.");
+                        System.out.println("Years of experience update skipped.");
                     }
+
                     pause();
                 }
                 // View Doctors
@@ -503,11 +582,11 @@ public class Main {
                     clearScreen();
                     DoctorController.displayAllDoctors();
                     
-                    String doctorID = getValidDoctorID("Enter doctor ID to view details (or type 'cancel' to abort): ");
+                    String doctorID = getValidDoctorID("Enter doctor ID to view details (or type '0' to abort): ");
                     if (doctorID != null) {
                         DoctorController.viewDoctorDetails(doctorID);
                     } else {
-                        System.out.println("Operation canceled.");
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
                     }
                     pause();
                 }
@@ -566,7 +645,7 @@ public class Main {
 
                             switch (status) {
                                 case 0 -> {
-                                    System.out.println("Operation canceled.");
+                                    System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
                                     continue; // Back to "Manage Appointments"
                                 }
                                 case 1 -> {
@@ -800,6 +879,23 @@ public class Main {
                                 if (newPrescription.equals("0")) continue;
                                 MedicalRecordController.addPrescription(recordID, newPrescription);
 
+                                // update treatment
+                                String newTreatment;
+                                while (true) {
+                                    System.out.print("Enter the new treatment (0 to cancel): ");
+                                    newTreatment = scanner.nextLine();
+                                    if (newTreatment.equals("0")) {
+                                        System.out.println("Operation cancelled.");
+                                        break;
+                                    }
+                                    if (!newTreatment.trim().isEmpty()) {
+                                        break;
+                                    }
+                                    System.out.println(StringUtils.beautify("Treatment cannot be empty!", BorderColor.RED));
+                                }
+                                if (newTreatment.equals("0")) continue;
+                                MedicalRecordController.addTreatment(recordID, newTreatment);
+
                                 System.out.println(StringUtils.beautify("Medical record updated successfully!"));
                                 break;
                             }
@@ -836,46 +932,445 @@ public class Main {
 
     // 6. SEARCH/VIEW DATA
     private static void searchViewData() {
+        while (true) {
+            clearScreen();
+            System.out.println(StringConstants.SEARCH_VIEW_MENU);
+            System.out.print("Choose an option (0 to return to main menu): ");
+            int choice;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // consume newline
+            } catch (Exception e) {
+                System.out.println(StringUtils.beautify("Invalid input! Please enter a number.", BorderColor.RED));
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (choice) {
+                case 0 -> {
+                    return;
+                }
+                case 1 -> searchPatients();
+                case 2 -> searchDoctors();
+                case 3 -> searchAppointments();
+                case 4 -> searchRooms();
+                default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
+            }
+            pause();
+        }
+    }
+
+    private static void searchPatients() {
         clearScreen();
-        System.out.println(StringConstants.SEARCH_VIEW_MENU);
-        System.out.print("Choose an option: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        System.out.println(StringUtils.beautify("=== Search Patients ==="));
+        System.out.println(StringUtils.beautify("[1] Search by Name\n[2] Search by Address\n[3] Search by Gender\n[4] Search by Age Range\n[0] Back"));
+
+        System.out.print("Choose search criteria: ");
+        int choice;
+        try {
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        } catch (Exception e) {
+            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
+            scanner.nextLine();
+            return;
+        }
+
         switch (choice) {
+            case 0 -> {
+                return;
+            }
             case 1 -> {
-                System.out.print("Enter patient name: ");
+                System.out.print("\nEnter patient name: ");
                 String name = scanner.nextLine();
                 clearScreen();
-                System.out.println("\n=== Search Results ===");
-                PatientController.searchPatientsByName(name).forEach(
-                        patient -> System.out.println("ID: " + patient.getPersonID() + ", Name: " + patient.getName()));
+                System.out.println(StringUtils.beautify("=== Patients with name \"" + name + "\" ==="));
+                PatientController.searchPatientsByName(name);
             }
             case 2 -> {
-                System.out.print("Enter doctor name: ");
-                String doctorName = scanner.nextLine();
+                System.out.print("\nEnter address: ");
+                String address = scanner.nextLine();
                 clearScreen();
-                System.out.println("\n=== Search Results ===");
-                DoctorController.searchDoctorsByName(doctorName).forEach(
-                        doctor -> System.out.println("Dr. " + doctor.getName() + " - " + doctor.getSpecialization()));
+                System.out.println(StringUtils.beautify("=== Patients with address \"" + address + "\" ==="));
+                PatientController.searchPatientsByAddress(address);
             }
             case 3 -> {
-                System.out.print("Enter department: ");
-                String department = scanner.nextLine();
-                clearScreen();
-                System.out.println("\n=== Doctors by Department ===");
-                DoctorController.getDoctorsByDepartment(department).forEach(
-                        doctor -> System.out.println("Dr. " + doctor.getName() + " - " + doctor.getSpecialization()));
+                System.out.println("\nSelect gender:");
+                System.out.println("[1] Male (M)");
+                System.out.println("[2] Female (F)");
+                System.out.print("Choice: ");
+                int genderChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                char gender = switch(genderChoice) {
+                    case 1 -> 'M';
+                    case 2 -> 'F';
+                    default -> {
+                        System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
+                        yield '\0';
+                    }
+                };
+                
+                if (gender != '\0') {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Patients with gender \"" + gender + "\" ==="));
+                    PatientController.searchPatientsByGender(gender);
+                }
             }
             case 4 -> {
-                System.out.print("Enter minimum years of experience: ");
-                int yearsOfExperience = scanner.nextInt();
+                System.out.println("\nSelect age range:");
+                System.out.println("[1] Children (0-12)");
+                System.out.println("[2] Teenagers (13-19)");
+                System.out.println("[3] Young Adults (20-39)");
+                System.out.println("[4] Middle-aged Adults (40-59)");
+                System.out.println("[5] Seniors (60+)");
+                System.out.print("Choice: ");
+                int ageChoice = scanner.nextInt();
                 scanner.nextLine();
-                clearScreen();
-                System.out.println("\n=== Doctors by Experience ===");
-                DoctorController.getDoctorsByExperience(yearsOfExperience).forEach(doctor -> System.out
-                        .println("Dr. " + doctor.getName() + " - " + doctor.getYearsOfExperience() + " years"));
+                
+                int[] ageRange = switch(ageChoice) {
+                    case 1 -> new int[]{0, 12};
+                    case 2 -> new int[]{13, 19};
+                    case 3 -> new int[]{20, 39};
+                    case 4 -> new int[]{40, 59};
+                    case 5 -> new int[]{60, 150};
+                    default -> null;
+                };
+                
+                if (ageRange != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Patients aged " + ageRange[0] + "-" + ageRange[1] + " ==="));
+                    PatientController.searchPatientsByAgeRange(ageRange[0], ageRange[1]);
+                }
             }
-            default -> System.out.println("Invalid choice!");
+        }
+    }
+
+    private static void searchDoctors() {
+        clearScreen();
+        System.out.println(StringUtils.beautify("=== Search Doctors ==="));
+        System.out.println(StringUtils.beautify("[1] Search by Name\n[2] Search by Department\n[3] Search by Gender\n[4] Search by Age Range\n[5] Search by Experience\n[6] Search by Shift\n[0] Back"));
+
+        System.out.print("\nChoose search criteria: ");
+        int choice;
+        try {
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        } catch (Exception e) {
+            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
+            scanner.nextLine();
+            return;
+        }
+
+        switch (choice) {
+            case 0 -> {
+                return;
+            }
+            case 1 -> {
+                System.out.print("\nEnter doctor name: ");
+                String name = scanner.nextLine();
+                clearScreen();
+                System.out.println(StringUtils.beautify("=== Doctors named \"" + name + "\" ==="));
+                List<Doctor> results = DoctorController.searchDoctorsByName(name);
+                if (!results.isEmpty()) {
+                    results.forEach(System.out::println);
+                } else {
+                    System.out.println("No doctors found with that name.");
+                }
+            }
+            case 2 -> {
+                System.out.println("\nSelect department:");
+                System.out.println("[1] Surgery");
+                System.out.println("[2] Cardiology");
+                System.out.println("[3] Pediatrics");
+                System.out.println("[4] Neurology");
+                System.out.println("[5] Orthopedics");
+                System.out.print("Choice: ");
+                int deptChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                String department = switch(deptChoice) {
+                    case 1 -> "Surgery";
+                    case 2 -> "Cardiology";
+                    case 3 -> "Pediatrics";
+                    case 4 -> "Neurology";
+                    case 5 -> "Orthopedics";
+                    default -> null;
+                };
+                
+                if (department != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Doctors in Department \"" + department + "\" ==="));
+                    List<Doctor> results = DoctorController.getDoctorsByDepartment(department);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println("No doctors found in that department.");
+                    }
+                }
+            }
+            case 3 -> {
+                System.out.println("\nSelect gender:");
+                System.out.println("[1] Male (M)");
+                System.out.println("[2] Female (F)");
+                System.out.print("Choice: ");
+                int genderChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                char gender = switch(genderChoice) {
+                    case 1 -> 'M';
+                    case 2 -> 'F';
+                    default -> '\0';
+                };
+                
+                if (gender != '\0') {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Doctors with Gender \"" + gender + "\" ==="));
+                    List<Doctor> results = DoctorController.searchDoctorsByGender(gender);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println("No doctors found of that gender.");
+                    }
+                }
+            }
+            case 4 -> {
+                System.out.println("\nSelect age range:");
+                System.out.println("[1] Young (25-35)");
+                System.out.println("[2] Middle-aged (36-50)");
+                System.out.println("[3] Senior (51+)");
+                System.out.print("Choice: ");
+                int ageChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                int[] ageRange = switch(ageChoice) {
+                    case 1 -> new int[]{25, 35};
+                    case 2 -> new int[]{36, 50};
+                    case 3 -> new int[]{51, 100};
+                    default -> null;
+                };
+                
+                if (ageRange != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Doctors aged " + ageRange[0] + "-" + ageRange[1] + " ==="));
+                    List<Doctor> results = DoctorController.searchDoctorsByAgeRange(ageRange[0], ageRange[1]);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println("No doctors found in that age range.");
+                    }
+                }
+            }
+            case 5 -> {
+                System.out.println("\nSelect experience level:");
+                System.out.println("[1] Junior (0-5 years)");
+                System.out.println("[2] Intermediate (6-10 years)");
+                System.out.println("[3] Senior (11+ years)");
+                System.out.print("Choice: ");
+                int expChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                int experience = switch(expChoice) {
+                    case 1 -> 0;
+                    case 2 -> 6;
+                    case 3 -> 11;
+                    default -> -1;
+                };
+                
+                if (experience >= 0) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Doctors with " + experience + "+ years of experience ==="));
+                    List<Doctor> results = DoctorController.getDoctorsByExperience(experience);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println("No doctors found with that experience level.");
+                    }
+                }
+            }
+            case 6 -> {
+                System.out.println("\nSelect shift:");
+                System.out.println("[1] Morning");
+                System.out.println("[2] Evening");
+                System.out.print("Choice: ");
+                int shiftChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                String shift = switch(shiftChoice) {
+                    case 1 -> "Morning";
+                    case 2 -> "Evening";
+                    default -> null;
+                };
+                
+                if (shift != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Doctors in " + shift + " shift ==="));
+                    List<Doctor> results = DoctorController.getDoctorsByShift(shift);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println("No doctors found in that shift.");
+                    }
+                }
+            }
+        }
+    }
+
+    private static void searchAppointments() {
+        clearScreen();
+        System.out.println(StringUtils.beautify("=== Search Appointments ==="));
+        System.out.println(StringUtils.beautify("[1] Search by status\n[2] Search by date\n[0] Back"));
+
+        System.out.print("Choose search criteria: ");
+        int choice;
+        try {
+            choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+        } catch (Exception e) {
+            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
+            scanner.nextLine();
+            return;
+        }
+
+        switch (choice) {
+            case 0 -> {
+                return;
+            }
+            case 1 -> {
+                System.out.println("\nSelect appointment status:");
+                System.out.println("[1] Active");
+                System.out.println("[2] Scheduled");
+                System.out.print("Choice: ");
+                int statusChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                String status = switch(statusChoice) {
+                    case 1 -> "Active";
+                    case 2 -> "Scheduled";
+                    default -> null;
+                };
+                
+                if (status != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Appointments with Status \"" + status + "\" ==="));
+                    AppointmentController.searchAppointmentsByStatus(status);
+                } else {
+                    System.out.println(StringUtils.beautify("Invalid status choice!", BorderColor.RED));
+                }
+            }
+            case 2 -> {
+                System.out.println("\nSelect date range:");
+                System.out.println("[1] Today");
+                System.out.println("[2] This Week");
+                System.out.println("[3] This Month");
+                System.out.print("Choice: ");
+                int dateChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                LocalDate today = LocalDate.now();
+                LocalDate startDate;
+                LocalDate endDate;
+
+                switch (dateChoice) {
+                    case 1 -> { // Today
+                        startDate = today;
+                        endDate = today;
+                        clearScreen();
+                        System.out.println(StringUtils.beautify("=== Appointments for Today ==="));
+                        AppointmentController.searchAppointmentsByDateRange(startDate, endDate);
+                    }
+                    case 2 -> { // This week
+                        startDate = today;
+                        endDate = today.plusDays(7);
+                        clearScreen();
+                        System.out.println(StringUtils.beautify("=== Appointments for This Week ==="));
+                        AppointmentController.searchAppointmentsByDateRange(startDate, endDate); 
+                    }
+                    case 3 -> { // This month 
+                        startDate = today;
+                        endDate = today.plusMonths(1);
+                        clearScreen();
+                        System.out.println(StringUtils.beautify("=== Appointments for This Month ==="));
+                        AppointmentController.searchAppointmentsByDateRange(startDate, endDate);
+                    }
+                    default -> System.out.println(StringUtils.beautify("Invalid date range choice!", BorderColor.RED));
+                }
+            }
+            default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
+        }
+    }
+
+    private static void searchRooms() {
+        clearScreen();
+        System.out.println(StringUtils.beautify("=== Search Rooms ==="));
+        System.out.println(StringUtils.beautify("[1] Search by room type\n[2] Search by status\n[0] Back"));
+
+        System.out.print("Choose search criteria: ");
+        int choice;
+        try {
+            choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+        } catch (Exception e) {
+            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
+            scanner.nextLine();
+            return;
+        }
+
+        switch (choice) {
+            case 0 -> {
+            return;
+            }
+            case 1 -> {
+            System.out.println("\nSelect room type:");
+            System.out.println("[1] ICU");
+            System.out.println("[2] Ward");
+            System.out.println("[3] Emergency");
+            System.out.println("[4] Operation");
+            System.out.println("[5] Isolation");
+            System.out.print("Choice: ");
+            int roomChoice = scanner.nextInt();
+            scanner.nextLine();
+            
+            String roomType = switch(roomChoice) {
+                case 1 -> "ICU";
+                case 2 -> "Ward";
+                case 3 -> "Emergency";
+                case 4 -> "Operation";
+                case 5 -> "Isolation";
+                default -> null;
+            };
+            
+            if (roomType != null) {
+                clearScreen();
+                System.out.println(StringUtils.beautify("=== Rooms of Type \"" + roomType + "\" ==="));
+                RoomController.searchRoomsByType(roomType);
+            } else {
+                System.out.println(StringUtils.beautify("Invalid room type choice!", BorderColor.RED));
+            }
+            }
+            case 2 -> {
+            System.out.println("\nSelect status:");
+            System.out.println("[1] Available");
+            System.out.println("[2] Occupied");
+            System.out.print("Choice: ");
+            int statusChoice = scanner.nextInt();
+            scanner.nextLine();
+            
+            String status = switch(statusChoice) {
+                case 1 -> "Available";
+                case 2 -> "Occupied";
+                default -> null;
+            };
+            
+            if (status != null) {
+                clearScreen();
+                System.out.println(StringUtils.beautify("=== Rooms with Status \"" + status + "\" ==="));
+                RoomController.searchRoomsByStatus(status);
+            } else {
+                System.out.println(StringUtils.beautify("Invalid status choice!", BorderColor.RED));
+            }
+            }
+            default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
         }
     }
 

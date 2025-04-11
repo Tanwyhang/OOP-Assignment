@@ -7,11 +7,26 @@ import java.util.Map;
 import java.util.Random;
 import models.Patient;
 
-public final class PatientController {
+public final class PatientController implements ControllerInterface<Patient> {
     private final static List<Patient> patients = new ArrayList<>();
 
     static {
         loadPatientsFromFile();
+    }
+
+    @Override
+    public void saveToFile() {
+        savePatientsToFile();
+    }
+
+    @Override
+    public void loadFromFile() {
+        loadPatientsFromFile();
+    }
+
+    @Override
+    public List<Patient> getAll() {
+        return new ArrayList<>(patients);
     }
 
     public static boolean registerPatient(String name, String address, String phoneNumber, char gender, int age) {
@@ -130,20 +145,89 @@ public final class PatientController {
         
         System.out.println("Total Patients: " + ColorCodes.BOLD + ColorCodes.GREEN + totalPatients + ColorCodes.RESET);
     }
+    // Display patients using a parameter, a list of patients
+    public static void displayPatients(List<Patient> patientList) {
+        System.out.println("\n" + ColorCodes.BOLD + ColorCodes.BRIGHT_CYAN + "=== Display Patients ===" + ColorCodes.RESET + "\n");
+
+        if (patientList.isEmpty()) {
+            System.out.println(ColorCodes.ITALIC + ColorCodes.YELLOW + "No patients found." + ColorCodes.RESET);
+            return;
+        }
+
+        final int COLUMNS = 3;
+        final int CELL_WIDTH = 30;
+        final String HORIZONTAL_LINE = "+" + "-".repeat(CELL_WIDTH) + "+";
+
+        int totalPatients = patientList.size();
+        int rows = (totalPatients + COLUMNS - 1) / COLUMNS;
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                System.out.print(HORIZONTAL_LINE);
+                if (col < COLUMNS - 1) System.out.print("  ");
+            }
+            System.out.println();
+
+            for (int col = 0; col < COLUMNS; col++) {
+                int index = row * COLUMNS + col;
+                if (index < totalPatients) {
+                    Patient patient = patientList.get(index);
+
+                    String formattedID = ColorCodes.BOLD + ColorCodes.BRIGHT_YELLOW +
+                            patient.getPersonID() + ColorCodes.RESET;
+
+                    String name = ColorCodes.BRIGHT_WHITE + patient.getName() + ColorCodes.RESET;
+
+                    String cell = String.format("| %s - %s", formattedID, name);
+                    String visibleText = patient.getPersonID() + " - " + patient.getName();
+                    int padding = CELL_WIDTH - visibleText.length() - 1;
+
+                    System.out.print(cell + " ".repeat(Math.max(0, padding)) + "|");
+                } else {
+                    System.out.print("|" + " ".repeat(CELL_WIDTH) + "|");
+                }
+
+                if (col < COLUMNS - 1) System.out.print("  ");
+            }
+            System.out.println();
+
+            for (int col = 0; col < COLUMNS; col++) {
+                int index = row * COLUMNS + col;
+                if (index < totalPatients) {
+                    Patient patient = patientList.get(index);
+
+                    String ageGender = ColorCodes.CYAN + "Age: " +
+                            patient.getAge() + " | Gender: " +
+                            patient.getGender() + ColorCodes.RESET;
+
+                    int visibleLength = ("Age: " + patient.getAge() + " | Gender: " + patient.getGender()).length();
+                    int padding = CELL_WIDTH - visibleLength - 1;
+
+                    System.out.print("| " + ageGender + " ".repeat(Math.max(0, padding)) + "|");
+                } else {
+                    System.out.print("|" + " ".repeat(CELL_WIDTH) + "|");
+                }
+
+                if (col < COLUMNS - 1) System.out.print("  ");
+            }
+            System.out.println();
+
+            for (int col = 0; col < COLUMNS; col++) {
+                System.out.print(HORIZONTAL_LINE);
+                if (col < COLUMNS - 1) System.out.print("  ");
+            }
+            System.out.println("\n");
+        }
+
+        System.out.println("Total Patients: " + ColorCodes.BOLD + ColorCodes.GREEN + totalPatients + ColorCodes.RESET);
+    }
 
     //View patient details
     public static void viewPatientDetails(String patientID) {
         Patient patient = findPatientByID(patientID);
         if (patient != null) {
-            //Show patient details
             System.out.println("\n=== Patient Details ===\n");
-            System.out.println("Patient ID  : " + patient.getPersonID());
-            System.out.println("Name        : " + patient.getName());
-            System.out.println("Address     : " + patient.getAddress());
-            System.out.println("Phone Number: " + patient.getPhoneNumber());
-            System.out.println("Gender      : " + patient.getGender());
-            System.out.println("Age         : " + patient.getAge());
-            
+            System.out.println(patient.toString());
         } else {
             System.out.println("Patient not found.");
         }
@@ -172,6 +256,47 @@ public final class PatientController {
         return removed;
     }
 
+    public static List<Patient> searchPatientsByAgeRange(int minAge, int maxAge) {
+        List<Patient> filteredPatients = new ArrayList<>();
+        for (Patient patient : patients) {
+            if (patient.getAge() >= minAge && patient.getAge() <= maxAge) {
+                filteredPatients.add(patient);
+            }
+        }
+        return filteredPatients;
+    }
+
+    // search patient by gender
+    public static List<Patient> searchPatientsByGender(char gender) {
+        List<Patient> filteredPatients = new ArrayList<>();
+        for (Patient patient : patients) {
+            if (patient.getGender() == gender) {
+                filteredPatients.add(patient);
+            }
+        }
+        return filteredPatients;
+    }
+
+    // search by address keywords
+    public static List<Patient> searchPatientsByAddress(String address) {
+        List<Patient> filteredPatients = new ArrayList<>();
+        for (Patient patient : patients) {
+            if (patient.getAddress().toLowerCase().contains(address.toLowerCase())) {
+                filteredPatients.add(patient);
+            }
+        }
+        return filteredPatients;
+    }
+
+    public static String getPatientName(String patientID) {
+        return patients.stream()
+            .filter(patient -> patient.getPersonID().equals(patientID))
+            .map(Patient::getName)
+            .findFirst()
+            .orElse(null);
+    }
+
+    
     public void updatePatientDetails(String patientID, Map<String, String> details) {
         patients.stream()
             .filter(patient -> patient.getPersonID().equals(patientID))
@@ -191,7 +316,7 @@ public final class PatientController {
             .orElse(null);
     }
 
-    public static void savePatientsToFile() {
+    private static void savePatientsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/patients.csv"))) {
             for (Patient patient : patients) {
                 writer.write(patient.getPersonID() + "," + patient.getName() + "," + patient.getAddress() + "," +
@@ -203,7 +328,7 @@ public final class PatientController {
         }
     }
 
-    public static void loadPatientsFromFile() {
+    private static void loadPatientsFromFile() {
         File file = new File("data/patients.csv");
         if (file.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -232,6 +357,4 @@ public final class PatientController {
         // check if patient id exist in the patient array
         return patients.stream().anyMatch(patient -> patient.getPersonID().equals(patientID));
     }
-
-
 }

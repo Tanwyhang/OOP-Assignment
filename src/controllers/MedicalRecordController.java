@@ -57,6 +57,17 @@ public final class MedicalRecordController {
             });
     }
 
+    // add treatment to record
+    public static void addTreatment(String recordID, String treatment) {
+        records.stream()
+            .filter(record -> record.getRecordID().equals(recordID))
+            .findFirst()
+            .ifPresent(record -> {
+                record.addTreatment(treatment);
+                saveRecordsToFile();
+            });
+    }
+
     public static boolean removeRecord(String recordID){
         boolean removed = records.removeIf(record -> record.getRecordID().equals(recordID));
         if(removed){
@@ -110,8 +121,8 @@ public final class MedicalRecordController {
                 writer.write(record.getRecordID() + "," + 
                              record.getPatientID() + "," + // Include patient ID
                              record.getDateCreated() + "," +
-                             String.join(";", record.getDiagnoses()) + "," +
-                             String.join(";", record.getPrescriptions()) + "," +
+                             String.join(";", record.getDiagnoses()) + "->" +
+                             String.join(";", record.getPrescriptions()) + "->" +
                              String.join(";", record.getTreatments()));
                 writer.newLine();
             }

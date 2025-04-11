@@ -40,12 +40,14 @@ public class Appointment {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        return String.format("Appointment ID: %s, Date: %s, Status: %s, Patient: %s, Doctor: %s, Room: %s",
-                appointmentID,
-                date.format(formatter),
-                status,
-                patientID,
-                doctorID,
-                roomID);
+        String statusColored = status.equalsIgnoreCase("Active") ? "\u001B[32m" + status + "\u001B[0m" : 
+                             status.equalsIgnoreCase("Scheduled") ? "\u001B[33m" + status + "\u001B[0m" : status;
+        int colorCodeLength = 10; // Length of color codes (\u001B[32m and \u001B[0m)
+        return String.format("%-15s %-20s %-" + (10 + colorCodeLength) + "s %-15s %-15s",
+            appointmentID,
+            date.format(formatter),
+            statusColored,
+            patientID == null ? "null" : patientID,
+            doctorID == null ? "null" : doctorID);
     }
 }
