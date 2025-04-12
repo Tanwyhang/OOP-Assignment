@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 import models.Doctor;
+import models.Nurse;
+import models.Patient;
 import utils.StringConstants;
 import utils.StringUtils;
 import utils.StringUtils.BorderColor;
@@ -54,10 +56,10 @@ public class Main {
                 System.out.print("Choose an option: ");
                 try {
                     choice = Integer.parseInt(scanner.nextLine());
-                    if (choice >= 0 && choice <= 8) { // Valid choices are between 0 and 7 inclusive
+                    if (choice >= 0 && choice <= 9) { // Valid choices are between 0 and 7 inclusive
                         break;
                     } else {
-                        System.out.println(StringUtils.beautify("Error: Choice must be between 0-8. Please try again.", BorderColor.RED));
+                        System.out.println(StringUtils.beautify("Error: Choice must be between 0-9. Please try again.", BorderColor.RED));
                     }
                 } catch (NumberFormatException e) {
                     System.out.println(StringUtils.beautify("Error: Invalid input. Please enter a valid number.", BorderColor.RED));
@@ -76,17 +78,23 @@ public class Main {
                     manageDoctors();
                     break;
                 case 4:
+                    manageNurses();
+                    break;
+                case 5:
                     manageAppointments();
                     break;
-                case 5: 
+                case 6: 
                     manageMedicalRecords(); 
                     break;
-                case 6:
+                case 7:
                     searchViewData();
                     break;
                 case 8:
-                    changePassword();
+                    analyticsDashboard();
                     break;
+                case 9:
+                    changePassword();
+                    return;
                 case 0:
                     System.exit(0);
                 default:
@@ -594,7 +602,276 @@ public class Main {
         }
     }
 
-    // 4. MANAGE APPOINTMENT
+    // 4. MANAGE NURSES
+    public static void manageNurses() {
+        while (true) {
+            clearScreen();
+            System.out.println(StringConstants.NURSE_MENU);
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 0 -> {
+                    showMainMenu();
+                } // Exit to main menu
+                // Add Nurse
+                case 1 -> {
+                    clearScreen();
+                    // prints sample input data
+                    System.out.println(StringConstants.NURSE_SAMPLE_DATA);
+                    String name = null, address = null, phoneNumber = null, department = null, shift = null;
+                    int age = 0, yearsOfExperience = 0;
+                    char gender = 0;
+                    boolean in_progress = true;
+
+                    // Validate and get nurse name
+                    while (in_progress) {
+                        System.out.print("Enter nurse name (e.g., Jane Smith) or type 'cancel' to abort: ");
+                        name = scanner.nextLine();
+                        if (name.equalsIgnoreCase("cancel")) {
+                            System.out.println("Operation canceled.");
+                            in_progress = false;
+                            break;
+                        }
+                        if (name.trim().isEmpty()) {
+                            System.out.println("Error: Name cannot be empty. Please try again.");
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Validate and get nurse age
+                    while (in_progress) {
+                        System.out.print("Enter nurse age (e.g., 30) or type 'cancel' to abort: ");
+                        String input = scanner.nextLine();
+                        if (input.equalsIgnoreCase("cancel")) {
+                            System.out.println("Operation canceled.");
+                            in_progress = false;
+                            break;
+                        }
+                        try {
+                            age = Integer.parseInt(input);
+                            if (age > 0) {
+                                break;
+                            } else {
+                                System.out.println("Error: Age must be a positive number. Please try again.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Error: Invalid input. Please enter a valid age.");
+                        }
+                    }
+
+                    // Validate and get nurse gender
+                    while (in_progress) {
+                        System.out.print("Enter nurse gender (M/F) or type 'cancel' to abort: ");
+                        String genderInput = scanner.nextLine();
+                        if (genderInput.equalsIgnoreCase("cancel")) {
+                            System.out.println("Operation canceled.");
+                            in_progress = false;
+                            break;
+                        }
+                        if (genderInput.equalsIgnoreCase("M") || genderInput.equalsIgnoreCase("F")) {
+                            gender = genderInput.toUpperCase().charAt(0);
+                            break;
+                        } else {
+                            System.out.println("Error: Gender must be 'M' or 'F'. Please try again.");
+                        }
+                    }
+
+                    // Validate and get nurse address
+                    while (in_progress) {
+                        System.out.print("Enter nurse address (e.g., 123 Main St, City) or type 'cancel' to abort: ");
+                        address = scanner.nextLine();
+                        if (address.equalsIgnoreCase("cancel")) {
+                            System.out.println("Operation canceled.");
+                            in_progress = false;
+                            break;
+                        }
+                        if (address.trim().isEmpty()) {
+                            System.out.println("Error: Address cannot be empty. Please try again.");
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Validate and get nurse phone number
+                    while (in_progress) {
+                        System.out.print("Enter nurse phone number (e.g., 1234567890) or type 'cancel' to abort: ");
+                        phoneNumber = scanner.nextLine();
+                        if (phoneNumber.equalsIgnoreCase("cancel")) {
+                            System.out.println("Operation canceled.");
+                            in_progress = false;
+                            break;
+                        }
+                        if (phoneNumber.trim().isEmpty() || !phoneNumber.matches("\\d+")) {
+                            System.out.println("Error: Phone number must be numeric and cannot be empty. Please try again.");
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Validate and get nurse department
+                    while (in_progress) {
+                        System.out.print("Enter nurse department (e.g., ICU) or type 'cancel' to abort: ");
+                        department = scanner.nextLine();
+                        if (department.equalsIgnoreCase("cancel")) {
+                            System.out.println("Operation canceled.");
+                            in_progress = false;
+                            break;
+                        }
+                        if (department.trim().isEmpty()) {
+                            System.out.println("Error: Department cannot be empty. Please try again.");
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Validate and get nurse shift
+                    while (in_progress) {
+                        System.out.print("Enter nurse shift (e.g., Morning, Night) or type 'cancel' to abort: ");
+                        shift = scanner.nextLine();
+                        if (shift.equalsIgnoreCase("cancel")) {
+                            System.out.println("Operation canceled.");
+                            in_progress = false;
+                            break;
+                        }
+                        if (shift.trim().isEmpty()) {
+                            System.out.println("Error: Shift cannot be empty. Please try again.");
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Validate and get nurse years of experience
+                    while (in_progress) {
+                        System.out.print("Enter nurse years of experience (e.g., 5) or type 'cancel' to abort: ");
+                        String input = scanner.nextLine();
+                        if (input.equalsIgnoreCase("cancel")) {
+                            System.out.println("Operation canceled.");
+                            in_progress = false;
+                            break;
+                        }
+                        try {
+                            yearsOfExperience = Integer.parseInt(input);
+                            if (yearsOfExperience >= 0) {
+                                break;
+                            } else {
+                                System.out.println("Error: Years of experience cannot be negative. Please try again.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Error: Invalid input. Please enter a valid number.");
+                        }
+                    }
+
+                    // Add nurse using validated inputs
+                    if (in_progress) {
+                        NurseController.hireNurse(name, address, phoneNumber, gender, age, department, shift,
+                            yearsOfExperience);
+                        System.out.println("Nurse added successfully!");
+                    }
+                    pause();
+                }
+                // Remove Nurse
+                case 2 -> {
+                    clearScreen();
+                    NurseController.displayAllNurses();
+                    
+                    String nurseID = getValidNurseID("Enter nurse ID to remove (or type '0' to abort): ");
+                    if (nurseID != null) {
+                        if (NurseController.removeNurse(nurseID)) {
+                            System.out.println("Nurse removed successfully!");
+                        } else {
+                            System.out.println("Nurse not found!");
+                        }
+                    } else {
+                        System.out.println(StringUtils.beautify("Operation cancelled", BorderColor.RED));
+                    }
+                    pause();
+                }
+                // Update Nurse Details
+                case 3 -> {
+                    clearScreen();
+                    NurseController.displayAllNurses();
+                    System.out.println(StringConstants.NURSE_SAMPLE_DATA);
+
+                    String nurseID = getValidInput("Enter nurse ID to update (or type '0' to abort): ", "Nurse ID");
+                    if (nurseID == null) {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                        pause();
+                        break;
+                    }
+
+                    // Update department
+                    System.out.print("Enter new department (leave blank to skip, or type '0' to abort): ");
+                    String department = scanner.nextLine();
+                    if (department.equals("0")) {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                        pause();
+                        break;
+                    }
+                    if (!department.isBlank()) {
+                        NurseController.updateDepartment(nurseID, department);
+                        System.out.println(StringUtils.beautify("Nurse department updated successfully!"));
+                    } else {
+                        System.out.println("Department update skipped.");
+                    }
+
+                    // Update shift
+                    System.out.print("Enter new shift (leave blank to skip, or type '0' to abort): ");
+                    String shift = scanner.nextLine();
+                    if (shift.equals("0")) {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                        pause();
+                        break;
+                    }
+                    if (!shift.isBlank()) {
+                        NurseController.updateShift(nurseID, shift);
+                        System.out.println(StringUtils.beautify("Nurse shift updated successfully!"));
+                    } else {
+                        System.out.println("Shift update skipped.");
+                    }
+
+                    // Update years of experience
+                    System.out.print("Enter new years of experience (leave blank to skip, or type '0' to abort): ");
+                    String experienceInput = scanner.nextLine();
+                    if (experienceInput.equals("0")) {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                        pause();
+                        break;
+                    }
+                    if (!experienceInput.isBlank()) {
+                        try {
+                            int yearsOfExperience = Integer.parseInt(experienceInput);
+                            NurseController.updateExperience(nurseID, yearsOfExperience);
+                            System.out.println(StringUtils.beautify("Nurse years of experience updated successfully!"));
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input for years of experience. Update skipped.");
+                        }
+                    } else {
+                        System.out.println("Years of experience update skipped.");
+                    }
+
+                    pause();
+                }
+                // View Nurses
+                case 4 -> {
+                    clearScreen();
+                    NurseController.displayAllNurses();
+                    
+                    String nurseID = getValidNurseID("\nEnter nurse ID to view details (or type '0' to abort): ");
+                    if (nurseID != null) {
+                        NurseController.viewNurseDetails(nurseID);
+                    } else {
+                        System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                    }
+                    pause();
+                }
+            }
+        }
+    }
+
+    // 5. MANAGE APPOINTMENT
     private static void manageAppointments(){
         while (true){
             clearScreen();
@@ -691,7 +968,7 @@ public class Main {
         
     }
 
-    // 5. MANAGE MEDICAL RECORDS
+    // 6. MANAGE MEDICAL RECORDS
     private static void manageMedicalRecords() {
         while (true) {
             clearScreen();
@@ -930,7 +1207,7 @@ public class Main {
         }
     }
 
-    // 6. SEARCH/VIEW DATA
+    // 7. SEARCH/VIEW DATA
     private static void searchViewData() {
         while (true) {
             clearScreen();
@@ -951,96 +1228,125 @@ public class Main {
                     return;
                 }
                 case 1 -> searchPatients();
-                case 2 -> searchDoctors();
-                case 3 -> searchAppointments();
-                case 4 -> searchRooms();
-                default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
+                case 2 -> searchDoctors(); 
+                case 3 -> searchNurses();
+                case 4 -> searchAppointments();
+                case 5 -> searchRooms();
+                default -> {System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
             }
-            pause();
+            }
         }
     }
 
     private static void searchPatients() {
-        clearScreen();
-        System.out.println(StringUtils.beautify("=== Search Patients ==="));
-        System.out.println(StringUtils.beautify("[1] Search by Name\n[2] Search by Address\n[3] Search by Gender\n[4] Search by Age Range\n[0] Back"));
 
-        System.out.print("Choose search criteria: ");
-        int choice;
-        try {
-            choice = scanner.nextInt();
-            scanner.nextLine();
-        } catch (Exception e) {
-            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
-            scanner.nextLine();
-            return;
-        }
+        while (true) {
+            clearScreen();
+            System.out.println(StringUtils.beautify("=== Search Patients ==="));
+            System.out.println(StringUtils.beautify("[1] Search by Name\n[2] Search by Address\n[3] Search by Gender\n[4] Search by Age Range\n[0] Back"));
 
-        switch (choice) {
-            case 0 -> {
+            System.out.print("Choose search criteria: ");
+            int choice;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            } catch (Exception e) {
+                System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
+                scanner.nextLine();
                 return;
             }
-            case 1 -> {
-                System.out.print("\nEnter patient name: ");
-                String name = scanner.nextLine();
-                clearScreen();
-                System.out.println(StringUtils.beautify("=== Patients with name \"" + name + "\" ==="));
-                PatientController.searchPatientsByName(name);
-            }
-            case 2 -> {
-                System.out.print("\nEnter address: ");
-                String address = scanner.nextLine();
-                clearScreen();
-                System.out.println(StringUtils.beautify("=== Patients with address \"" + address + "\" ==="));
-                PatientController.searchPatientsByAddress(address);
-            }
-            case 3 -> {
-                System.out.println("\nSelect gender:");
-                System.out.println("[1] Male (M)");
-                System.out.println("[2] Female (F)");
-                System.out.print("Choice: ");
-                int genderChoice = scanner.nextInt();
-                scanner.nextLine();
-                
-                char gender = switch(genderChoice) {
-                    case 1 -> 'M';
-                    case 2 -> 'F';
-                    default -> {
-                        System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
-                        yield '\0';
-                    }
-                };
-                
-                if (gender != '\0') {
-                    clearScreen();
-                    System.out.println(StringUtils.beautify("=== Patients with gender \"" + gender + "\" ==="));
-                    PatientController.searchPatientsByGender(gender);
+
+            switch (choice) {
+                case 0 -> {
+                    return;
                 }
-            }
-            case 4 -> {
-                System.out.println("\nSelect age range:");
-                System.out.println("[1] Children (0-12)");
-                System.out.println("[2] Teenagers (13-19)");
-                System.out.println("[3] Young Adults (20-39)");
-                System.out.println("[4] Middle-aged Adults (40-59)");
-                System.out.println("[5] Seniors (60+)");
-                System.out.print("Choice: ");
-                int ageChoice = scanner.nextInt();
-                scanner.nextLine();
-                
-                int[] ageRange = switch(ageChoice) {
-                    case 1 -> new int[]{0, 12};
-                    case 2 -> new int[]{13, 19};
-                    case 3 -> new int[]{20, 39};
-                    case 4 -> new int[]{40, 59};
-                    case 5 -> new int[]{60, 150};
-                    default -> null;
-                };
-                
-                if (ageRange != null) {
+                case 1 -> {
+                    System.out.print("\nEnter patient name: ");
+                    String name = scanner.nextLine();
                     clearScreen();
-                    System.out.println(StringUtils.beautify("=== Patients aged " + ageRange[0] + "-" + ageRange[1] + " ==="));
-                    PatientController.searchPatientsByAgeRange(ageRange[0], ageRange[1]);
+                    System.out.println(StringUtils.beautify("=== Patients with name \"" + name + "\" ==="));
+                    List<Patient> results = PatientController.searchPatientsByName(name);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println(StringUtils.beautify("No patients found with that name.", BorderColor.RED));
+                    }
+                    pause();
+                }
+                case 2 -> {
+                        System.out.print("\nEnter patient address: ");
+                        String address = scanner.nextLine();
+                        clearScreen(); 
+                        System.out.println(StringUtils.beautify("=== Patients with address \"" + address + "\" ==="));
+                        List<Patient> results = PatientController.searchPatientsByAddress(address);
+                        if (!results.isEmpty()) {
+                            results.forEach(System.out::println);
+                        } else {
+                            System.out.println(StringUtils.beautify("No patients found at that address.", BorderColor.RED));
+                        }
+                        pause();
+                }
+                case 3 -> {
+                    System.out.println("\nSelect gender:");
+                    System.out.println("[1] Male (M)");
+                    System.out.println("[2] Female (F)");
+                    System.out.print("Choice: ");
+                    int genderChoice = scanner.nextInt();
+                    scanner.nextLine();
+                    
+                    char gender = switch(genderChoice) {
+                        case 1 -> 'M';
+                        case 2 -> 'F';
+                        default -> {
+                            System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
+                            yield '\0';
+                        }
+                    };
+                    
+                    if (gender != '\0') {
+                        clearScreen();
+                        System.out.println(StringUtils.beautify("=== Patients with Gender \"" + gender + "\" ==="));
+                        List<Patient> results = PatientController.searchPatientsByGender(gender);
+                        if (!results.isEmpty()) {
+                            results.forEach(System.out::println);
+                            pause();
+                        } else {
+                            System.out.println("No patients found of that gender.");
+                        }
+                    }
+                    pause();
+                }
+                case 4 -> {
+                    System.out.println("\nSelect age range:");
+                    System.out.println("[1] Children (0-12)");
+                    System.out.println("[2] Teenagers (13-19)");
+                    System.out.println("[3] Young Adults (20-39)");
+                    System.out.println("[4] Middle-aged Adults (40-59)");
+                    System.out.println("[5] Seniors (60+)");
+                    System.out.print("Choice: ");
+                    int ageChoice = scanner.nextInt();
+                    scanner.nextLine();
+                    
+                    int[] ageRange = switch(ageChoice) {
+                        case 1 -> new int[]{0, 12};
+                        case 2 -> new int[]{13, 19};
+                        case 3 -> new int[]{20, 39};
+                        case 4 -> new int[]{40, 59};
+                        case 5 -> new int[]{60, 150};
+                        default -> null;
+                    };
+                    
+                    if (ageRange != null) {
+                        clearScreen();
+                        System.out.println(StringUtils.beautify("=== Patients aged " + ageRange[0] + "-" + ageRange[1] + " ==="));
+                        List<Patient> result = PatientController.searchPatientsByAgeRange(ageRange[0], ageRange[1]);
+                        if (!result.isEmpty()) {
+                            result.forEach(System.out::println);
+                        } else {
+                            System.out.println("No patients found in that age range.");
+                        }
+                    }
+                    pause();
                 }
             }
         }
@@ -1077,6 +1383,7 @@ public class Main {
                 } else {
                     System.out.println("No doctors found with that name.");
                 }
+                pause();
             }
             case 2 -> {
                 System.out.println("\nSelect department:");
@@ -1108,6 +1415,7 @@ public class Main {
                         System.out.println("No doctors found in that department.");
                     }
                 }
+                pause();
             }
             case 3 -> {
                 System.out.println("\nSelect gender:");
@@ -1133,6 +1441,7 @@ public class Main {
                         System.out.println("No doctors found of that gender.");
                     }
                 }
+                pause();
             }
             case 4 -> {
                 System.out.println("\nSelect age range:");
@@ -1160,6 +1469,7 @@ public class Main {
                         System.out.println("No doctors found in that age range.");
                     }
                 }
+                pause();
             }
             case 5 -> {
                 System.out.println("\nSelect experience level:");
@@ -1186,6 +1496,7 @@ public class Main {
                     } else {
                         System.out.println("No doctors found with that experience level.");
                     }
+                    pause();
                 }
             }
             case 6 -> {
@@ -1211,8 +1522,204 @@ public class Main {
                     } else {
                         System.out.println("No doctors found in that shift.");
                     }
+                    pause();
                 }
             }
+        }
+    }
+
+    private static void searchNurses() {
+        clearScreen();
+        System.out.println(StringUtils.beautify("=== Search Nurses ==="));
+        System.out.println(StringUtils.beautify("[1] Search by Name\n[2] Search by Department\n[3] Search by Gender\n[4] Search by Age Range\n[5] Search by Experience\n[6] Search by Shift\n[0] Back"));
+
+        System.out.print("\nChoose search criteria: ");
+        int choice;
+        try {
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        } catch (Exception e) {
+            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
+            scanner.nextLine();
+            return;
+        }
+
+        switch (choice) {
+            case 0 -> {
+                return;
+            }
+            case 1 -> {
+                System.out.print("\nEnter nurse name: ");
+                String name = scanner.nextLine();
+                clearScreen();
+                System.out.println(StringUtils.beautify("=== Nurses named \"" + name + "\" ==="));
+                List<Nurse> results = NurseController.searchNursesByName(name);
+                if (!results.isEmpty()) {
+                    results.forEach(System.out::println);
+                    pause();
+                } else {
+                    System.out.println("No nurses found with that name.");
+                }
+                pause();
+            }
+
+            case 2 -> {
+                System.out.println("\nSelect department:");
+                System.out.println("[1] Cardiology");
+                System.out.println("[2] Neurology");
+                System.out.println("[3] Pediatrics");
+                System.out.println("[4] Oncology");
+                System.out.println("[5] Dermatology");
+                System.out.println("[6] Gastroenterology");
+                System.out.println("[7] Ophthalmology");
+                System.out.println("[8] Pulmonology");
+                System.out.println("[9] Endocrinology");
+                System.out.println("[10] Rheumatology");
+                System.out.print("Choice: ");
+                int deptChoice = scanner.nextInt();
+                scanner.nextLine();
+                    
+                String department = switch(deptChoice) {
+                    case 1 -> "Cardiology";
+                    case 2 -> "Neurology"; 
+                    case 3 -> "Pediatrics";
+                    case 4 -> "Oncology";
+                    case 5 -> "Dermatology";
+                    case 6 -> "Gastroenterology";
+                    case 7 -> "Ophthalmology";
+                    case 8 -> "Pulmonology";
+                    case 9 -> "Endocrinology";
+                    case 10 -> "Rheumatology";
+                    default -> null;
+                };
+                    
+                if (department != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Nurses in Department \"" + department + "\" ==="));
+                    List<Nurse> results = NurseController.getNursesByDepartment(department);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println("No nurses found in that department.");
+                    }
+
+                    pause();
+                }
+            }
+
+            case 3 -> {
+                System.out.println("\nSelect gender:");
+                System.out.println("[1] Male (M)");
+                System.out.println("[2] Female (F)");
+                System.out.print("Choice: ");
+                int genderChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                char gender = switch(genderChoice) {
+                    case 1 -> 'M';
+                    case 2 -> 'F';
+                    default -> '\0';
+                };
+                
+                if (gender != '\0') {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Nurses with Gender \"" + gender + "\" ==="));
+                    List<Nurse> results = NurseController.searchNursesByGender(gender);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println("No nurses found of that gender.");
+                    }
+                    pause();
+                }
+            }
+            
+            case 4 -> {
+                System.out.println("\nSelect age range:");
+                System.out.println("[1] Young (20-30)");
+                System.out.println("[2] Middle-aged (31-45)");
+                System.out.println("[3] Senior (46+)");
+                System.out.print("Choice: ");
+                int ageChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                int[] ageRange = switch(ageChoice) {
+                    case 1 -> new int[]{20, 30};
+                    case 2 -> new int[]{31, 45};
+                    case 3 -> new int[]{46, 100};
+                    default -> null;
+                };
+                
+                if (ageRange != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Nurses aged " + ageRange[0] + "-" + ageRange[1] + " ==="));
+                    List<Nurse> results = NurseController.searchNursesByAgeRange(ageRange[0], ageRange[1]);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println("No nurses found in that age range.");
+                    }
+                    pause();
+                }
+            }
+            case 5 -> {
+                System.out.println("\nSelect experience level:");
+                System.out.println("[1] Junior (0-3 years)");
+                System.out.println("[2] Intermediate (4-7 years)");
+                System.out.println("[3] Senior (8+ years)");
+                System.out.print("Choice: ");
+                int expChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                int experience = switch(expChoice) {
+                    case 1 -> 0;
+                    case 2 -> 4;
+                    case 3 -> 8;
+                    default -> -1;
+                };
+                
+                if (experience >= 0) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Nurses with " + experience + "+ years of experience ==="));
+                    List<Nurse> results = NurseController.getNursesByExperience(experience);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                        
+                    } else {
+                        System.out.println("No nurses found with that experience level.");
+                    }
+                    pause();
+                }
+            }
+            case 6 -> {
+                System.out.println("\nSelect shift:");
+                System.out.println("[1] Morning");
+                System.out.println("[2] Evening");
+                System.out.println("[3] Night");
+                System.out.print("Choice: ");
+                int shiftChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                String shift = switch(shiftChoice) {
+                    case 1 -> "Morning";
+                    case 2 -> "Evening";
+                    case 3 -> "Night";
+                    default -> null;
+                };
+                
+                if (shift != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Nurses in " + shift + " shift ==="));
+                    List<Nurse> results = NurseController.getNursesByShift(shift);
+                    if (!results.isEmpty()) {
+                        results.forEach(System.out::println);
+                    } else {
+                        System.out.println("No nurses found in that shift.");
+                    }
+                    pause();
+                }
+            }
+            default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
         }
     }
 
@@ -1257,6 +1764,7 @@ public class Main {
                 } else {
                     System.out.println(StringUtils.beautify("Invalid status choice!", BorderColor.RED));
                 }
+                pause();
             }
             case 2 -> {
                 System.out.println("\nSelect date range:");
@@ -1278,6 +1786,7 @@ public class Main {
                         clearScreen();
                         System.out.println(StringUtils.beautify("=== Appointments for Today ==="));
                         AppointmentController.searchAppointmentsByDateRange(startDate, endDate);
+                        pause();
                     }
                     case 2 -> { // This week
                         startDate = today;
@@ -1285,6 +1794,7 @@ public class Main {
                         clearScreen();
                         System.out.println(StringUtils.beautify("=== Appointments for This Week ==="));
                         AppointmentController.searchAppointmentsByDateRange(startDate, endDate); 
+                        pause();
                     }
                     case 3 -> { // This month 
                         startDate = today;
@@ -1292,6 +1802,7 @@ public class Main {
                         clearScreen();
                         System.out.println(StringUtils.beautify("=== Appointments for This Month ==="));
                         AppointmentController.searchAppointmentsByDateRange(startDate, endDate);
+                        pause();
                     }
                     default -> System.out.println(StringUtils.beautify("Invalid date range choice!", BorderColor.RED));
                 }
@@ -1347,6 +1858,7 @@ public class Main {
             } else {
                 System.out.println(StringUtils.beautify("Invalid room type choice!", BorderColor.RED));
             }
+            pause();
             }
             case 2 -> {
             System.out.println("\nSelect status:");
@@ -1366,15 +1878,26 @@ public class Main {
                 clearScreen();
                 System.out.println(StringUtils.beautify("=== Rooms with Status \"" + status + "\" ==="));
                 RoomController.searchRoomsByStatus(status);
+                pause();
             } else {
                 System.out.println(StringUtils.beautify("Invalid status choice!", BorderColor.RED));
+                pause(false);
             }
             }
             default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
         }
     }
 
-    // 8. CHANGE PASSWORD
+    // 8. Analytics dashboard stub
+    private static void analyticsDashboard() {
+        clearScreen();
+        System.out.println(StringUtils.beautify("=== Analytics Dashboard ==="));
+        System.out.println("This feature is under development.");
+        pause();
+    }
+
+
+    // 9. CHANGE PASSWORD
     private static void changePassword() {
         System.out.print("Enter current password: ");
         String oldPassword = scanner.nextLine();
@@ -1387,7 +1910,13 @@ public class Main {
             System.out.println("Invalid current password! Try again.");
         }
 
-        pause();
+        // flush inpot buffer
+        // print user relogin beautified
+        System.out.println(StringUtils.beautify("Please log in again to continue."));
+        scanner.nextLine();
+
+        showLoginScreen();
+        showMainMenu();
     }
 
     // Utility Methods
@@ -1457,6 +1986,24 @@ public class Main {
             }
             
             return doctorID;
+        }
+    }
+
+    private static String getValidNurseID(String prompt) {
+        while (true) {
+            String nurseID = getValidInput(prompt, "Nurse ID");
+            
+            if (nurseID == null) {
+                return null;
+            }
+            
+            // Assuming nurse IDs follow pattern "N" followed by numbers
+            if (!nurseID.matches("N\\d+")) {
+                System.out.println("Error: Invalid nurse ID format. Should start with 'N' followed by numbers.");
+                continue;
+            }
+            
+            return nurseID;
         }
     }
 }

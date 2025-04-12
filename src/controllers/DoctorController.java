@@ -49,14 +49,6 @@ public final class DoctorController implements ControllerInterface<Doctor> {
     }
 
     // SEARCH METHODS
-
-    static String getDoctorName(String doctorID) {
-        return doctors.stream()
-            .filter(doctor -> doctor.getPersonID().equals(doctorID))
-            .map(Doctor::getName)
-            .findFirst()
-            .orElse(null);
-    }
     
     public static Doctor findDoctorByID(String doctorID) {
         return doctors.stream()

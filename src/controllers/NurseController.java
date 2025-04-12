@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import models.Nurse;
+import utils.StringUtils;
 
-public final class NurseContoller {
+public final class NurseController {
     private final static List<Nurse> nurses = new ArrayList<>();
 
     static {
@@ -26,15 +27,7 @@ public final class NurseContoller {
         Nurse nurse = findNurseByID(personID);
         if (nurse != null) {
             System.out.println("\n=== Nurse Details ===\n");
-            System.out.println("Nurse ID           : " + nurse.getPersonID());
-            System.out.println("Name               : " + nurse.getName());
-            System.out.println("Address            : " + nurse.getAddress());
-            System.out.println("Phone Number       : " + nurse.getPhoneNumber());
-            System.out.println("Gender             : " + nurse.getGender());
-            System.out.println("Age                : " + nurse.getAge());
-            System.out.println("Department         : " + nurse.getDepartment());
-            System.out.println("Shift              : " + nurse.getShift());
-            System.out.println("Years of Experience: " + nurse.getYearsOfExperience());
+            System.out.println(nurse.toString());
         } else {
             System.out.println("Nurse not found.");
         }
@@ -49,7 +42,7 @@ public final class NurseContoller {
 
     public static List<Nurse> searchNursesByName(String nurseName) {
         return nurses.stream()
-            .filter(n -> n.getName().equalsIgnoreCase(nurseName))
+            .filter(n -> n.getName().contains(nurseName))
             .toList();
     }
 
@@ -133,12 +126,21 @@ public final class NurseContoller {
     }
 
     public static void displayAllNurses() {
-        System.out.println("\n=== All Nurses ===\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n=== All Nurses ===\n\n");
+        
         if (nurses.isEmpty()) {
-            System.out.println("No nurses found.");
+            sb.append("No nurses found.");
         } else {
-            nurses.forEach(nurse -> System.out.println(nurse.getPersonID() + " - " + nurse.getName()));
+            nurses.forEach(nurse -> {
+                String formattedLine = String.format("%-8s - %s", 
+                    nurse.getPersonID(), 
+                    nurse.getName());
+                sb.append(formattedLine).append("\n");
+            });
         }
+        
+        System.out.print(StringUtils.beautify(sb.toString()));
     }
 
     public static boolean nurseExists(String nurseID) {

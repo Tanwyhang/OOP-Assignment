@@ -1,5 +1,7 @@
 package models;
 
+import utils.StringUtils;
+
 public class Nurse extends Person {
     private String department;
     private String shift;
@@ -74,8 +76,7 @@ public class Nurse extends Person {
     // to String method
     @Override
     public String toString() {
-        return String.format("""
-                             ===Nurse Details===
+        return StringUtils.beautify(String.format("""
                                ID         : %s
                                Name       : %s
                                Address    : %s
@@ -87,7 +88,7 @@ public class Nurse extends Person {
                                Experience : %d years""",
             personID, name, address, phoneNumber, gender, age,
             department, shift, yearsOfExperience
-        );
+        ));
     }
 
     // Nurse-specific methods
