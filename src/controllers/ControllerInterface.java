@@ -6,6 +6,7 @@ package controllers;
 import java.util.List;
 
 public interface ControllerInterface<T> {
+    String generateUniqueID();
     void saveToFile();
     void loadFromFile();
     List<T> getAll();

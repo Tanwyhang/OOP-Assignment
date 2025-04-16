@@ -26,7 +26,12 @@ public final class PatientController implements ControllerInterface<Patient> {
 
     @Override
     public List<Patient> getAll() {
-        return new ArrayList<>(patients);
+        return getAllPatients();
+    }
+    
+    @Override
+    public String generateUniqueID() {
+        return generateUniquePatientID();
     }
 
     public static boolean registerPatient(String name, String address, String phoneNumber, char gender, int age) {
@@ -343,7 +348,7 @@ public final class PatientController implements ControllerInterface<Patient> {
         }
     }
 
-    public static List<Patient> getAllPatients() {
+    private static List<Patient> getAllPatients() {
         return patients;
     }
 

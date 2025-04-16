@@ -1,6 +1,5 @@
 package controllers;
 
-
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,11 +7,31 @@ import java.util.List;
 import models.MedicalRecord;
 import utils.StringUtils;
 
-public final class MedicalRecordController {
+public final class MedicalRecordController implements ControllerInterface<MedicalRecord> {
     private final static List<MedicalRecord> records = new ArrayList<>();
 
     static  {
         loadRecordsFromFile();
+    }
+
+    @Override
+    public void saveToFile() {
+        saveRecordsToFile();
+    }
+
+    @Override
+    public void loadFromFile() {
+        loadRecordsFromFile();
+    }
+
+    @Override
+    public List<MedicalRecord> getAll() {
+        return new ArrayList<>(records);
+    }
+
+    @Override
+    public String generateUniqueID() {
+        return generateUniqueRecordID();
     }
 
     // generate unique record id, using while to prevent overlap
@@ -115,7 +134,7 @@ public final class MedicalRecordController {
     }
     
 
-    public static void saveRecordsToFile() {
+    private static void saveRecordsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/medical_records.csv"))) {
             for (MedicalRecord record : records) {
                 writer.write(record.getRecordID() + "," + 

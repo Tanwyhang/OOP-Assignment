@@ -14,7 +14,7 @@ import utils.DateTimeUtils;
 import utils.StringUtils;
 
 
-public final class AppointmentController {
+public final class AppointmentController implements ControllerInterface<Appointment> {
     private final static List<Appointment> appointments = new ArrayList<>();
     private static final DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -22,8 +22,28 @@ public final class AppointmentController {
         loadAppointmentsFromFile();
     }
 
+    @Override
+    public void saveToFile() {
+        saveAppointmentsToFile();
+    }
+
+    @Override
+    public void loadFromFile() {
+        loadAppointmentsFromFile();
+    }
+
+    @Override
+    public List<Appointment> getAll() {
+        return appointments;
+    }
+
+    @Override
+    public String generateUniqueID() {
+        return generateUniqueAppointmentID();
+    }
+
     // unique appointment ID generator Axxxx
-    public static String generateUniqueAppointmentID() {
+    private static String generateUniqueAppointmentID() {
         Random random = new Random();
         boolean isUnique = false;
         String appointmentID = "";
@@ -309,7 +329,7 @@ public final class AppointmentController {
         }
     }
 
-    public static void saveAppointmentsToFile() {
+    private static void saveAppointmentsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/appointments.csv"))) {
             for (Appointment appointment : appointments) {
                 writer.write(appointment.getAppointmentID() + "," + 

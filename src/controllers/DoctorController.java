@@ -28,6 +28,11 @@ public final class DoctorController implements ControllerInterface<Doctor> {
         return new ArrayList<>(doctors);
     }
 
+    @Override
+    public String generateUniqueID() {
+        return generateUniquePersonID();
+    }
+
     public static boolean hireDoctor(String name, String address, String phoneNumber, char gender, int age, String department, String shift, int yearsOfExperience, String specialization) {
         String personID = generateUniquePersonID();
         Doctor newDoctor = new Doctor(personID, name, address, phoneNumber, gender, age, department, shift, yearsOfExperience, specialization);
@@ -176,7 +181,7 @@ public final class DoctorController implements ControllerInterface<Doctor> {
     }
 
     // FILE IO HANDLING
-    public static void saveDoctorsToFile() {
+    private static void saveDoctorsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/doctors.csv"))) {
             for (Doctor doctor : doctors) {
                 writer.write(doctor.getPersonID() + "," + doctor.getName() + "," + doctor.getAddress() + "," +

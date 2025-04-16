@@ -7,11 +7,31 @@ import java.util.Random;
 import models.Nurse;
 import utils.StringUtils;
 
-public final class NurseController {
+public final class NurseController implements ControllerInterface<Nurse> {
     private final static List<Nurse> nurses = new ArrayList<>();
 
     static {
         loadNursesFromFile();
+    }
+
+    @Override
+    public void saveToFile() {
+        saveNursesToFile();
+    }
+
+    @Override
+    public void loadFromFile() {
+        loadNursesFromFile();
+    }
+
+    @Override
+    public List<Nurse> getAll() {
+        return new ArrayList<>(nurses);
+    }
+    
+    @Override
+    public String generateUniqueID() {
+        return generateUniquePersonID();
     }
 
     public static boolean hireNurse(String name, String address, String phoneNumber, char gender, int age, String department, String shift, int yearsOfExperience) {

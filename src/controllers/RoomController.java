@@ -7,7 +7,7 @@ import java.util.Random;
 import models.Room;
 import utils.StringUtils;
 
-public final class RoomController {
+public final class RoomController implements ControllerInterface<Room> {
     private final static List<Room> rooms = new ArrayList<>();
     private static final Random random = new Random();
 
@@ -16,19 +16,43 @@ public final class RoomController {
         loadRoomsFromFile();
     }
 
-    public static boolean addRoom(String type) {
-        // Generate a unique RoomID
-        Room newRoom = null;
+    @Override
+    public void saveToFile() {
+        saveRoomsToFile();
+    }
 
-        while (true) { 
+    @Override
+    public void loadFromFile() {
+        loadRoomsFromFile();
+    }
+
+    @Override
+    public List<Room> getAll() {
+        return new ArrayList<>(rooms);
+    }
+
+    @Override
+    public String generateUniqueID() {
+        return generateUniqueRoomID();
+    }
+
+    // generate unique room id, using while to prevent overlap
+    private static String generateUniqueRoomID() {
+        while (true) {
             int id = random.nextInt(99) + 1; // Generates a number between 1 and 99
-            final String newRoomID = "R" + String.format("%02d", id); // Formats the number to always have two digits (e.g., R01, R02, ..., R99)
-            if (!rooms.stream().anyMatch(room -> room.getRoomID().equals(newRoomID))) {
-                // Create a new Room object with the generated ID and specified type
-                newRoom = new Room(newRoomID, type, "Available");
-                break;
+            String candidate = "R" + String.format("%02d", id); // Formats the number to always have two digits (e.g., R01, R02, ..., R99)
+            if (!rooms.stream().anyMatch(room -> room.getRoomID().equals(candidate))) {
+                return candidate;
             }
         }
+    }
+
+    public static boolean addRoom(String type) {
+        // Generate a unique RoomID using the existing method
+        String newRoomID = generateUniqueRoomID();
+        
+        // Create a new Room object with the generated ID and specified type
+        Room newRoom = new Room(newRoomID, type, "Available");
         
         // Add the new room to the list
         rooms.add(newRoom);
@@ -66,7 +90,7 @@ public final class RoomController {
         return rooms.stream().anyMatch(room -> room.getRoomID().equals(roomID));
     }
 
-    public static void saveRoomsToFile() {
+    private static void saveRoomsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/rooms.csv"))) {
             for (Room room : rooms) {
                 writer.write(room.getRoomID() + "," + room.getType() + "," + room.getStatus());
@@ -77,7 +101,7 @@ public final class RoomController {
         }
     }
 
-    public static void loadRoomsFromFile() {
+    private static void loadRoomsFromFile() {
         File file = new File("data/rooms.csv");
         if (file.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
