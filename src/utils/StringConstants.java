@@ -3,6 +3,23 @@ package utils;
 public class StringConstants {
     public static final String TAB = "\t\t";
 
+    // hospital analytic logo
+    public static final String ANALYTICS_LOGO = """
+    Analytics Dashboard 
+╔═══════════════════════════════════╗
+║     Hospital Performance Data     ║
+║   Real-time Metrics & Analysis    ║
+╚═══════════════════════════════════╝
+            """;
+
+    // peak hour analytics logo ascii
+    public static final String PEAK_HOUR_ANALYTICS_LOGO = """
+    ╔═══════════════════════════════════╗
+    ║     Time-Based Activity Data      ║
+    ║     Peak Appointment Periods      ║
+    ╚═══════════════════════════════════╝\n\n
+          """;
+
     public static final String LOGO = """
               \u001B[37m.-:/+oossssoo+/:-.\u001B[0m              
          \u001B[37m`:+ssssssssssssssssssssss+:`\u001B[0m         

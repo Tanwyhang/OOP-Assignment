@@ -23,11 +23,13 @@ public final class DoctorController implements ControllerInterface<Doctor> {
         loadDoctorsFromFile();
     }
 
+    // get all
     @Override
     public List<Doctor> getAll() {
-        return new ArrayList<>(doctors);
+        return doctors;
     }
 
+    
     @Override
     public String generateUniqueID() {
         return generateUniquePersonID();

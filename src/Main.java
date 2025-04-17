@@ -11,9 +11,20 @@ import utils.StringConstants;
 import utils.StringUtils;
 import utils.StringUtils.BorderColor;
 
+
 public class Main {
     private final static Scanner scanner = new Scanner(System.in);
     private static AdminController adminController;
+
+    public enum DayOfWeek {
+        SUNDAY,
+        MONDAY,
+        TUESDAY,
+        WEDNESDAY,
+        THURSDAY,
+        FRIDAY,
+        SATURDAY
+    }
 
     // MAIN ENTRY POINT
     public static void main(String[] args) {
@@ -1888,12 +1899,153 @@ public class Main {
         }
     }
 
-    // 8. Analytics dashboard stub
+    // 8. ANALYTICS DASHBOARD
     private static void analyticsDashboard() {
+        
+        // Calculate general statistics
+        int totalPatients = new PatientController().getAll().size();
+        int activeAppointments = AppointmentController.getActiveAppointments().size();
+        int totalRooms = new RoomController().getAll().size(); 
+        int availableRooms = RoomController.getAvailableRooms().size();
+        int availablePercentage = (totalRooms > 0) ? (availableRooms * 100 / totalRooms) : 0;
+        // get doctor count
+        int doctorsOnDuty = new DoctorController().getAll().size();
+        int nursesOnDuty = new NurseController().getAll().size();
+        int totalStaff = doctorsOnDuty + nursesOnDuty;
+
         clearScreen();
-        System.out.println(StringUtils.beautify("=== Analytics Dashboard ==="));
-        System.out.println("This feature is under development.");
+
+        // Dashboard header
+        System.out.println(StringConstants.LOGO_2);
+        System.out.println((StringConstants.ANALYTICS_LOGO));
+
+        // Display general statistics
+        System.out.println("\n\n=== GENERAL STATISTICS ===");
+
+        StringBuilder stats = new StringBuilder();
+        stats.append(String.format("Total Patients       : %d\n", totalPatients))
+             .append(String.format("Active Appointments  : %d\n", activeAppointments))
+             .append(String.format("Available Rooms      : %d/%d (%d%%)\n", availableRooms, totalRooms, availablePercentage))
+             .append(String.format("Staff on Duty        : %d (%d Doctors, %d Nurses)", totalStaff, doctorsOnDuty, nursesOnDuty));
+
+        System.out.println(StringUtils.beautify(stats.toString()));
+
+        // Room utilization 
+        System.out.println("\n\n=== ROOM UTILIZATION ===");
+        StringBuilder sb = new StringBuilder();
+        
+        // ICU rooms
+        int totalICURooms = RoomController.getRoomsByType("ICU").size();
+        int occupiedICURooms = RoomController.getOccupiedRoomsByType("ICU").size();
+        int icuOccupancyRate = totalICURooms > 0 ? (occupiedICURooms * 100 / totalICURooms) : 0;
+        sb.append(generateDemographicBar("ICU      ", icuOccupancyRate));
+
+        // Ward rooms  
+        int totalWardRooms = RoomController.getRoomsByType("Ward").size();
+        int occupiedWardRooms = RoomController.getOccupiedRoomsByType("Ward").size();
+        int wardOccupancyRate = totalWardRooms > 0 ? (occupiedWardRooms * 100 / totalWardRooms) : 0;
+        sb.append(generateDemographicBar("Ward     ", wardOccupancyRate));
+
+        // Emergency rooms
+        int totalEmergencyRooms = RoomController.getRoomsByType("Emergency").size();
+        int occupiedEmergencyRooms = RoomController.getOccupiedRoomsByType("Emergency").size(); 
+        int emergencyOccupancyRate = totalEmergencyRooms > 0 ? (occupiedEmergencyRooms * 100 / totalEmergencyRooms) : 0;
+        sb.append(generateDemographicBar("Emergency", emergencyOccupancyRate));
+
+        // Operation rooms
+        int totalOperationRooms = RoomController.getRoomsByType("Operation").size();
+        int occupiedOperationRooms = RoomController.getOccupiedRoomsByType("Operation").size();
+        int operationOccupancyRate = totalOperationRooms > 0 ? (occupiedOperationRooms * 100 / totalOperationRooms) : 0;
+        sb.append(generateDemographicBar("Operation", operationOccupancyRate));
+
+        // Isolation rooms
+        int totalIsolationRooms = RoomController.getRoomsByType("Isolation").size();
+        int occupiedIsolationRooms = RoomController.getOccupiedRoomsByType("Isolation").size();
+        int isolationOccupancyRate = totalIsolationRooms > 0 ? (occupiedIsolationRooms * 100 / totalIsolationRooms) : 0;
+        sb.append(generateDemographicBar("Isolation", isolationOccupancyRate));
+
+        System.out.println(StringUtils.beautify(sb.toString()));
+
+        System.out.println();
+
+        // Patient demographics
+        System.out.println("\n\n=== PATIENT AGE DISTRIBUTION ===");
+
+        
+        int childrenCount = PatientController.searchPatientsByAgeRange(0, 12).size();
+        int teenagersCount = PatientController.searchPatientsByAgeRange(13, 19).size();
+        int adultsCount = PatientController.searchPatientsByAgeRange(20, 59).size();
+        int seniorsCount = PatientController.searchPatientsByAgeRange(60, 150).size();
+        
+        int childrenPercentage = totalPatients > 0 ? (childrenCount * 100 / totalPatients) : 0;
+        int teenagersPercentage = totalPatients > 0 ? (teenagersCount * 100 / totalPatients) : 0;
+        int adultsPercentage = totalPatients > 0 ? (adultsCount * 100 / totalPatients) : 0;
+        int seniorsPercentage = totalPatients > 0 ? (seniorsCount * 100 / totalPatients) : 0;
+        sb.setLength(0); // Clear the StringBuilder
+        sb.append(generateDemographicBar("Children ", childrenPercentage))
+            .append(generateDemographicBar("Teenagers", teenagersPercentage))
+            .append(generateDemographicBar("Adults   ", adultsPercentage)) 
+            .append(generateDemographicBar("Seniors  ", seniorsPercentage));
+
+        System.out.println(StringUtils.beautify(sb.toString()));
+        
+        System.out.println("\n\n===Gender Distribution===");
+        int maleCount = PatientController.searchPatientsByGender('M').size();
+        int femaleCount = PatientController.searchPatientsByGender('F').size();
+        
+        int malePercentage = totalPatients > 0 ? (maleCount * 100 / totalPatients) : 0;
+        int femalePercentage = totalPatients > 0 ? (femaleCount * 100 / totalPatients) : 0;
+        
+        sb.setLength(0); // Clear the StringBuilder
+        sb.append(generateDemographicBar("Male    ", malePercentage));
+        sb.append(generateDemographicBar("Female  ", femalePercentage));
+        System.out.println(StringUtils.beautify(sb.toString()));
+
+        // Appointment trends
+        System.out.println(("\n\n=== APPOINTMENT TRENDS ==="));
+        System.out.println("Weekly Distribution:");
+        
+        String[] days = {DayOfWeek.SUNDAY.name(), DayOfWeek.MONDAY.name(), DayOfWeek.TUESDAY.name(), 
+            DayOfWeek.WEDNESDAY.name(), DayOfWeek.THURSDAY.name(), DayOfWeek.FRIDAY.name(), 
+            DayOfWeek.SATURDAY.name()};
+        int[] appointmentsByDay = new int[7];
+        int maxAppointments = 0;
+        String maxAppointmentDay = "";
+        
+        // Get max appointments for scaling
+        for (int i = 0; i < days.length; i++) {
+            appointmentsByDay[i] = AppointmentController.getAppointmentCountForDay(days[i]);
+            if (appointmentsByDay[i] > maxAppointments) {
+            maxAppointments = appointmentsByDay[i];
+            maxAppointmentDay = days[i];
+            }
+        }
+
+
+        // Build visualization string
+        sb.setLength(0); // Clear StringBuilder
+        for (int i = 0; i < days.length; i++) {
+            sb.append(generateAppointmentBar(String.format("%-15s", days[i]), appointmentsByDay[i], maxAppointments));
+        }
+        
+        System.out.println(StringUtils.beautify(sb.toString()));
+
+        sb.setLength(0);
+
+        sb.append(StringConstants.PEAK_HOUR_ANALYTICS_LOGO);
+        sb.append(String.format("The day with the most appointments \nis \u001B[33m%s\u001B[0m with \u001B[32m%d\u001B[0m appointments.", maxAppointmentDay, maxAppointments));
+
+        
+        String mostCommonTime = AppointmentController.getMostCommonAppointmentTime();
+        int mostCommonTimeCount = AppointmentController.getAppointmentCountForTime(mostCommonTime);
+        int timePercentage = activeAppointments > 0 ? (mostCommonTimeCount * 100 / activeAppointments) : 0;
+        
+        sb.append(String.format("\nPeak Hour: %s (%d%% of appointments)\n\n", mostCommonTime, timePercentage));
+        System.out.println(sb.toString());
         pause();
+
+        // consume next line
+        scanner.nextLine();
     }
 
 
@@ -2005,5 +2157,33 @@ public class Main {
             
             return nurseID;
         }
+    }
+
+    // Helper method to generate demographic bar visualizations
+    private static String generateDemographicBar(String label, int percentage) {
+        StringBuilder bar = new StringBuilder(label + "  [");
+        int barLength = 20;  // Total length of the bar
+        int filledBlocks = (int)Math.round((percentage * barLength) / 100.0);
+        
+        for (int i = 0; i < barLength; i++) {
+            bar.append(i < filledBlocks ? "█" : "░");
+        }
+        
+        bar.append(String.format("] %d%%\n", percentage));
+        return bar.toString();
+    }
+
+    // Helper method to generate appointment trend bars  
+    private static String generateAppointmentBar(String day, int count, int maxCount) {
+        StringBuilder bar = new StringBuilder(day + " [");
+        int barLength = 25;  // Total length of the bar
+        int filledBlocks = (maxCount > 0) ? (count * barLength / maxCount) : 0;
+        
+        for (int i = 0; i < barLength; i++) {
+            bar.append(i < filledBlocks ? "█" : "░");
+        }
+        
+        bar.append(String.format("] %d\n", count));
+        return bar.toString();
     }
 }

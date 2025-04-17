@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import models.Appointment;
@@ -302,7 +304,55 @@ public final class AppointmentController implements ControllerInterface<Appointm
             System.out.println(resultBuilder.toString());
         }
     }
-    
+
+    public static List<Appointment> getActiveAppointments() {
+        // return appiointment with active status
+        List<Appointment> activeAppointments = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            if (appointment.getStatus().equalsIgnoreCase("active")) {
+                activeAppointments.add(appointment);
+            }
+        }
+        return activeAppointments;
+    }
+
+    // get appointment count for day, returns int, use Day of week (string) as argument
+    public static int getAppointmentCountForDay(String dayOfWeek) {
+        int count = 0;
+        for (Appointment appointment : appointments) {
+            if (appointment.getDate().getDayOfWeek().name().equalsIgnoreCase(dayOfWeek)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static String getMostCommonAppointmentTime() {
+        // Map to store count of each time
+        Map<String, Integer> timeFrequency = new HashMap<>();
+        
+        // Count frequency of each appointment time
+        for (Appointment appointment : appointments) {
+            String time = appointment.getDate().format(DateTimeFormatter.ofPattern("HH:mm"));
+            timeFrequency.merge(time, 1, Integer::sum);
+        }
+        
+        // Find the time with maximum frequency
+        return timeFrequency.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("No appointments found");
+    }
+
+    public static int getAppointmentCountForTime(String time) {
+        return (int) appointments.stream()
+                .filter(appointment -> 
+                    appointment.getDate().format(DateTimeFormatter.ofPattern("HH:mm"))
+                    .equals(time))
+                .count();
+    }
+
     /**
      * Display appointments for a specific patient
      */

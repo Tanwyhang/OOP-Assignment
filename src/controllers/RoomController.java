@@ -90,6 +90,27 @@ public final class RoomController implements ControllerInterface<Room> {
         return rooms.stream().anyMatch(room -> room.getRoomID().equals(roomID));
     }
 
+    // method to get available room, no parameter, return list of available rooms
+    public static List<Room> getAvailableRooms() {
+        return rooms.stream()
+            .filter(room -> room.getStatus().equals("Available"))
+            .toList();
+    }
+
+    // method to get list of room by type
+    public static List<Room> getRoomsByType(String type) {
+        return rooms.stream()
+            .filter(room -> room.getType().equals(type))
+            .toList();
+    }
+
+    // method to get list of room by type that are occupied
+    public static List<Room> getOccupiedRoomsByType(String type) {
+        return rooms.stream()
+            .filter(room -> room.getType().equals(type) && room.getStatus().equals("unavailable"))
+            .toList();
+    }
+
     private static void saveRoomsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/rooms.csv"))) {
             for (Room room : rooms) {
