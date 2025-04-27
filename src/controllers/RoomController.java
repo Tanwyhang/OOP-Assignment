@@ -107,7 +107,7 @@ public final class RoomController implements ControllerInterface<Room> {
     // method to get list of room by type that are occupied
     public static List<Room> getOccupiedRoomsByType(String type) {
         return rooms.stream()
-            .filter(room -> room.getType().equals(type) && room.getStatus().equals("unavailable"))
+            .filter(room -> room.getType().equals(type) && room.getStatus().equals("Occupied"))
             .toList();
     }
 
