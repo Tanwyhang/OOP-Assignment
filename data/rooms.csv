@@ -19,3 +19,6 @@ R91,Operation,Available
 R60,ICU,Available
 R41,ICU,Available
 R46,ICU,Available
+R83,Ward,Available
+R90,ICU,Available
+R96,ICU,unavailable

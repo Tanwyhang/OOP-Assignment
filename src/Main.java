@@ -142,7 +142,6 @@ public class Main {
                             scanner.nextLine(); // Clear invalid input
                             continue;
                         }
-                        scanner.nextLine();
 
                         if (roomTypeChoice == 0) break; // Back to "Manage Rooms"
 
@@ -162,7 +161,7 @@ public class Main {
                         RoomController.addRoom(type);
                         System.out.println(StringUtils.beautify("Room added successfully!"));
                         pause();
-                        break;
+                        scanner.nextLine();
                     }
                 }
                 case 2 -> {
@@ -177,6 +176,7 @@ public class Main {
                         System.out.println(StringUtils.beautify("Room not found!", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 case 3 -> {
                     clearScreen();
@@ -201,11 +201,13 @@ public class Main {
                     }
                     System.out.println(StringUtils.beautify("Room status updated successfully!"));
                     pause();
+                    scanner.nextLine();
                 }
                 default -> {
                     System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
                     pause();
                 }
+                
             }
         }
     }
@@ -221,7 +223,6 @@ public class Main {
                 scanner.nextLine(); // Clear invalid input
                 continue;
             }
-            scanner.nextLine();
 
             switch (choice) {
                 case 0 -> showMainMenu(); // Exit to main menu
@@ -252,6 +253,7 @@ public class Main {
                     PatientController.registerPatient(name, address, phoneNumber, gender, age);
                     System.out.println(StringUtils.beautify("Patient added successfully!"));
                     pause();
+                    scanner.nextLine();
                 }
                 case 2 -> {
                     clearScreen();
@@ -265,6 +267,7 @@ public class Main {
                         System.out.println(StringUtils.beautify("Patient not found!", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 case 3 -> {
                     clearScreen();
@@ -291,6 +294,7 @@ public class Main {
                     PatientController.updatePatientDetails(patientID, name, address, phoneNumber, gender, age);
                     System.out.println(StringUtils.beautify("Patient details updated successfully!"));
                     pause();
+                    scanner.nextLine();
                 }
                 case 4 -> {
                     clearScreen();
@@ -300,6 +304,7 @@ public class Main {
                     if (patientID.equalsIgnoreCase("cancel")) continue; // Back to "Manage Patients"
                     PatientController.viewPatientDetails(patientID);
                     pause();
+                    scanner.nextLine();
                 }
                 default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
             }
@@ -342,7 +347,6 @@ public class Main {
                 scanner.nextLine(); // Clear invalid input
                 continue;
             }
-            scanner.nextLine();
 
             switch (choice) {
                 case 0 -> {
@@ -521,6 +525,7 @@ public class Main {
                         System.out.println("Doctor added successfully!");
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 // Remove Doctor
                 case 2 -> {
@@ -538,6 +543,7 @@ public class Main {
                         System.out.println(StringUtils.beautify("Operation cancelled", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 // Update Doctor Details
                 case 3 -> {
@@ -618,6 +624,7 @@ public class Main {
                     }
 
                     pause();
+                    scanner.nextLine();
                 }
                 // View Doctors
                 case 4 -> {
@@ -631,7 +638,14 @@ public class Main {
                         System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
+                // default case
+                default -> {
+                        System.out.println(StringUtils.beautify("ENTER VALID CHOICE PLZZZ", BorderColor.RED));
+                        pause();
+                        scanner.nextLine();
+                    }
             }
         }
     }
@@ -647,7 +661,6 @@ public class Main {
                 scanner.nextLine(); // Clear invalid input
                 continue;
             }
-            scanner.nextLine();
 
             switch (choice) {
                 case 0 -> {
@@ -809,6 +822,7 @@ public class Main {
                         System.out.println("Nurse added successfully!");
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 // Remove Nurse
                 case 2 -> {
@@ -826,6 +840,7 @@ public class Main {
                         System.out.println(StringUtils.beautify("Operation cancelled", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 // Update Nurse Details
                 case 3 -> {
@@ -891,6 +906,7 @@ public class Main {
                     }
 
                     pause();
+                    scanner.nextLine();
                 }
                 // View Nurses
                 case 4 -> {
@@ -904,6 +920,7 @@ public class Main {
                         System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
             }
         }
@@ -920,7 +937,6 @@ public class Main {
                 scanner.nextLine(); // Clear invalid input
                 continue;
             }
-            scanner.nextLine();
 
             switch(choice){
                 case 0 -> {showMainMenu();}
@@ -931,6 +947,7 @@ public class Main {
                     // start interactive schedule appointment
                     AppointmentController.interactiveScheduleAppointment(scanner);
                     pause();
+                    scanner.nextLine();
                 }
                 case 2 -> {
                     clearScreen();
@@ -945,6 +962,7 @@ public class Main {
                         System.out.println("The appointment failed to be removed.");
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 case 3 -> {
                     clearScreen();
@@ -995,12 +1013,14 @@ public class Main {
                         }
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 case 4 -> {
                     //View appointments
                     clearScreen();
                     AppointmentController.displayAllAppointment();
                     pause();
+                    scanner.nextLine();
                 }
                 default -> System.out.println("Invalid choice!");
                 
@@ -1020,7 +1040,6 @@ public class Main {
                 scanner.nextLine(); // Clear invalid input
                 continue;
             }
-            scanner.nextLine();
 
             switch (choice) {
                 case 0 -> showMainMenu(); // Back to Main Menu
@@ -1082,6 +1101,7 @@ public class Main {
 
                     System.out.println(StringUtils.beautify("Medical record added successfully! Record ID: " + recordID));
                     pause();
+                    scanner.nextLine();
                 }
 
                 case 2 -> { // Remove medical record
@@ -1125,6 +1145,7 @@ public class Main {
                         System.out.println(StringUtils.beautify("Patient not found! Please enter a valid ID.", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
 
                 case 3 -> { // Update medical record
@@ -1219,6 +1240,7 @@ public class Main {
                         System.out.println(StringUtils.beautify("Patient not found! Please enter a valid ID.", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
 
                 case 4 -> { // View medical records
@@ -1238,6 +1260,7 @@ public class Main {
                         System.out.println(StringUtils.beautify("Patient not found!", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
 
                 default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
@@ -1256,7 +1279,6 @@ public class Main {
                 scanner.nextLine(); // Clear invalid input
                 continue;
             }
-            scanner.nextLine(); // consume newline
 
             switch (choice) {
                 case 0 -> {
@@ -1286,7 +1308,6 @@ public class Main {
                 scanner.nextLine(); // Clear invalid input
                 continue;
             }
-            scanner.nextLine();
 
             switch (choice) {
                 case 0 -> {
@@ -1304,6 +1325,7 @@ public class Main {
                         System.out.println(StringUtils.beautify("No patients found with that name.", BorderColor.RED));
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 case 2 -> {
                         System.out.print("\nEnter patient address: ");
@@ -1317,6 +1339,7 @@ public class Main {
                             System.out.println(StringUtils.beautify("No patients found at that address.", BorderColor.RED));
                         }
                         pause();
+                        scanner.nextLine();
                 }
                 case 3 -> {
                     System.out.println("\nSelect gender:");
@@ -1328,7 +1351,6 @@ public class Main {
                         scanner.nextLine(); // Clear invalid input
                         continue;
                     }
-                    scanner.nextLine();
                     
                     char gender = switch(genderChoice) {
                         case 1 -> 'M';
@@ -1351,6 +1373,7 @@ public class Main {
                         }
                     }
                     pause();
+                    scanner.nextLine();
                 }
                 case 4 -> {
                     System.out.println("\nSelect age range:");
@@ -1387,6 +1410,7 @@ public class Main {
                         }
                     }
                     pause();
+                    scanner.nextLine();
                 }
             }
         }
@@ -1403,7 +1427,6 @@ public class Main {
             scanner.nextLine(); // Clear invalid input
             return;
         }
-        scanner.nextLine();
 
         switch (choice) {
             case 0 -> {
@@ -1421,6 +1444,7 @@ public class Main {
                     System.out.println("No doctors found with that name.");
                 }
                 pause();
+                scanner.nextLine();
             }
             case 2 -> {
                 System.out.println("\nSelect department:");
@@ -1436,7 +1460,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 String department = switch(deptChoice) {
                     case 1 -> "Surgery";
@@ -1458,6 +1481,7 @@ public class Main {
                     }
                 }
                 pause();
+                scanner.nextLine();
             }
             case 3 -> {
                 System.out.println("\nSelect gender:");
@@ -1470,7 +1494,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 char gender = switch(genderChoice) {
                     case 1 -> 'M';
@@ -1489,6 +1512,7 @@ public class Main {
                     }
                 }
                 pause();
+                scanner.nextLine();
             }
             case 4 -> {
                 System.out.println("\nSelect age range:");
@@ -1502,7 +1526,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 int[] ageRange = switch(ageChoice) {
                     case 1 -> new int[]{25, 35};
@@ -1522,6 +1545,7 @@ public class Main {
                     }
                 }
                 pause();
+                scanner.nextLine();
             }
             case 5 -> {
                 System.out.println("\nSelect experience level:");
@@ -1535,7 +1559,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 int experience = switch(expChoice) {
                     case 1 -> 0;
@@ -1554,7 +1577,9 @@ public class Main {
                         System.out.println("No doctors found with that experience level.");
                     }
                     pause();
+                    
                 }
+                scanner.nextLine();
             }
             case 6 -> {
                 System.out.println("\nSelect shift:");
@@ -1567,7 +1592,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 String shift = switch(shiftChoice) {
                     case 1 -> "Morning";
@@ -1586,6 +1610,7 @@ public class Main {
                     }
                     pause();
                 }
+                scanner.nextLine();
             }
         }
     }
@@ -1601,7 +1626,6 @@ public class Main {
             scanner.nextLine(); // Clear invalid input
             return;
         }
-        scanner.nextLine();
 
         switch (choice) {
             case 0 -> {
@@ -1620,6 +1644,7 @@ public class Main {
                     System.out.println("No nurses found with that name.");
                 }
                 pause();
+                scanner.nextLine();
             }
 
             case 2 -> {
@@ -1641,7 +1666,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                     
                 String department = switch(deptChoice) {
                     case 1 -> "Cardiology";
@@ -1668,6 +1692,7 @@ public class Main {
                     }
 
                     pause();
+                    scanner.nextLine();
                 }
             }
 
@@ -1682,7 +1707,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 char gender = switch(genderChoice) {
                     case 1 -> 'M';
@@ -1701,6 +1725,7 @@ public class Main {
                     }
                     pause();
                 }
+                scanner.nextLine();
             }
             
             case 4 -> {
@@ -1715,7 +1740,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 int[] ageRange = switch(ageChoice) {
                     case 1 -> new int[]{20, 30};
@@ -1735,6 +1759,7 @@ public class Main {
                     }
                     pause();
                 }
+                scanner.nextLine();
             }
             case 5 -> {
                 System.out.println("\nSelect experience level:");
@@ -1748,7 +1773,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 int experience = switch(expChoice) {
                     case 1 -> 0;
@@ -1769,6 +1793,7 @@ public class Main {
                     }
                     pause();
                 }
+                scanner.nextLine();
             }
             case 6 -> {
                 System.out.println("\nSelect shift:");
@@ -1782,7 +1807,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 String shift = switch(shiftChoice) {
                     case 1 -> "Morning";
@@ -1802,6 +1826,7 @@ public class Main {
                     }
                     pause();
                 }
+                scanner.nextLine();
             }
             default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
         }
@@ -1818,7 +1843,6 @@ public class Main {
             scanner.nextLine(); // Clear invalid input
             return;
         }
-        scanner.nextLine(); // consume newline
 
         switch (choice) {
             case 0 -> {
@@ -1835,7 +1859,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 String status = switch(statusChoice) {
                     case 1 -> "Active";
@@ -1851,6 +1874,7 @@ public class Main {
                     System.out.println(StringUtils.beautify("Invalid status choice!", BorderColor.RED));
                 }
                 pause();
+                scanner.nextLine();
             }
             case 2 -> {
                 System.out.println("\nSelect date range:");
@@ -1864,7 +1888,6 @@ public class Main {
                     pause();
                     return;
                 }
-                scanner.nextLine();
                 
                 LocalDate today = LocalDate.now();
                 LocalDate startDate;
@@ -1897,6 +1920,7 @@ public class Main {
                     }
                     default -> System.out.println(StringUtils.beautify("Invalid date range choice!", BorderColor.RED));
                 }
+                scanner.nextLine();
             }
             default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
         }
@@ -1913,74 +1937,73 @@ public class Main {
             scanner.nextLine(); // Clear invalid input
             return;
         }
-        scanner.nextLine(); // consume newline
 
         switch (choice) {
             case 0 -> {
             return;
             }
             case 1 -> {
-            System.out.println("\nSelect room type:");
-            System.out.println("[1] ICU");
-            System.out.println("[2] Ward");
-            System.out.println("[3] Emergency");
-            System.out.println("[4] Operation");
-            System.out.println("[5] Isolation");
-            System.out.print("Choice: ");
-            int roomChoice = getIntegerInput();
-            if (roomChoice == -1) {
-                scanner.nextLine(); // Clear invalid input
+                System.out.println("\nSelect room type:");
+                System.out.println("[1] ICU");
+                System.out.println("[2] Ward");
+                System.out.println("[3] Emergency");
+                System.out.println("[4] Operation");
+                System.out.println("[5] Isolation");
+                System.out.print("Choice: ");
+                int roomChoice = getIntegerInput();
+                if (roomChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
+                
+                String roomType = switch(roomChoice) {
+                    case 1 -> "ICU";
+                    case 2 -> "Ward";
+                    case 3 -> "Emergency";
+                    case 4 -> "Operation";
+                    case 5 -> "Isolation";
+                    default -> null;
+                };
+                
+                if (roomType != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Rooms of Type \"" + roomType + "\" ==="));
+                    RoomController.searchRoomsByType(roomType);
+                } else {
+                    System.out.println(StringUtils.beautify("Invalid room type choice!", BorderColor.RED));
+                }
                 pause();
-                return;
-            }
-            scanner.nextLine();
-            
-            String roomType = switch(roomChoice) {
-                case 1 -> "ICU";
-                case 2 -> "Ward";
-                case 3 -> "Emergency";
-                case 4 -> "Operation";
-                case 5 -> "Isolation";
-                default -> null;
-            };
-            
-            if (roomType != null) {
-                clearScreen();
-                System.out.println(StringUtils.beautify("=== Rooms of Type \"" + roomType + "\" ==="));
-                RoomController.searchRoomsByType(roomType);
-            } else {
-                System.out.println(StringUtils.beautify("Invalid room type choice!", BorderColor.RED));
-            }
-            pause();
+                scanner.nextLine();
             }
             case 2 -> {
-            System.out.println("\nSelect status:");
-            System.out.println("[1] Available");
-            System.out.println("[2] Occupied");
-            System.out.print("Choice: ");
-            int statusChoice = getIntegerInput();
-            if (statusChoice == -1) {
-                scanner.nextLine(); // Clear invalid input
-                pause();
-                return;
-            }
-            scanner.nextLine();
-            
-            String status = switch(statusChoice) {
-                case 1 -> "Available";
-                case 2 -> "Occupied";
-                default -> null;
-            };
-            
-            if (status != null) {
-                clearScreen();
-                System.out.println(StringUtils.beautify("=== Rooms with Status \"" + status + "\" ==="));
-                RoomController.searchRoomsByStatus(status);
-                pause();
-            } else {
-                System.out.println(StringUtils.beautify("Invalid status choice!", BorderColor.RED));
-                pause(false);
-            }
+                System.out.println("\nSelect status:");
+                System.out.println("[1] Available");
+                System.out.println("[2] Occupied");
+                System.out.print("Choice: ");
+                int statusChoice = getIntegerInput();
+                if (statusChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
+                
+                String status = switch(statusChoice) {
+                    case 1 -> "Available";
+                    case 2 -> "Occupied";
+                    default -> null;
+                };
+                
+                if (status != null) {
+                    clearScreen();
+                    System.out.println(StringUtils.beautify("=== Rooms with Status \"" + status + "\" ==="));
+                    RoomController.searchRoomsByStatus(status);
+                    pause();
+                } else {
+                    System.out.println(StringUtils.beautify("Invalid status choice!", BorderColor.RED));
+                    pause(false);
+                }
+                scanner.nextLine();
             }
             default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
         }
