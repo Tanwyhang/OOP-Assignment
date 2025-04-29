@@ -10,20 +10,39 @@ import utils.StringUtils;
 public final class RoomController implements ControllerInterface<Room> {
     private final static List<Room> rooms = new ArrayList<>();
     private static final Random random = new Random();
+    private static final RoomController instance = new RoomController();
 
     // load rooms from file when the class is constructed
     static {
-        loadRoomsFromFile();
+        instance.loadFromFile();
     }
 
     @Override
     public void saveToFile() {
-        saveRoomsToFile();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/rooms.csv"))) {
+            for (Room room : rooms) {
+                writer.write(room.getRoomID() + "," + room.getType() + "," + room.getStatus());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving rooms to file: " + e.getMessage());
+        }
     }
 
     @Override
     public void loadFromFile() {
-        loadRoomsFromFile();
+        File file = new File("data/rooms.csv");
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(",");
+                    rooms.add(new Room(data[0], data[1], data[2]));
+                }
+            } catch (IOException e) {
+                System.err.println("Error loading rooms from file: " + e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -33,11 +52,6 @@ public final class RoomController implements ControllerInterface<Room> {
 
     @Override
     public String generateUniqueID() {
-        return generateUniqueRoomID();
-    }
-
-    // generate unique room id, using while to prevent overlap
-    private static String generateUniqueRoomID() {
         while (true) {
             int id = random.nextInt(99) + 1; // Generates a number between 1 and 99
             String candidate = "R" + String.format("%02d", id); // Formats the number to always have two digits (e.g., R01, R02, ..., R99)
@@ -49,21 +63,21 @@ public final class RoomController implements ControllerInterface<Room> {
 
     public static boolean addRoom(String type) {
         // Generate a unique RoomID using the existing method
-        String newRoomID = generateUniqueRoomID();
+        String newRoomID = instance.generateUniqueID();
         
         // Create a new Room object with the generated ID and specified type
         Room newRoom = new Room(newRoomID, type, "Available");
         
         // Add the new room to the list
         rooms.add(newRoom);
-        saveRoomsToFile();
+        new RoomController().saveToFile();
         return true;
     }
 
     public static boolean removeRoom(String roomID) {
         boolean removed = rooms.removeIf(room -> room.getRoomID().equals(roomID));
         if (removed) {
-            saveRoomsToFile();
+            instance.saveToFile();
         }
         return removed;
     }
@@ -74,7 +88,7 @@ public final class RoomController implements ControllerInterface<Room> {
             .findFirst()
             .ifPresent(room -> {
                 room.setStatus(status);
-                saveRoomsToFile();
+                instance.saveToFile();
             });
     }
 
@@ -109,32 +123,6 @@ public final class RoomController implements ControllerInterface<Room> {
         return rooms.stream()
             .filter(room -> room.getType().equals(type) && room.getStatus().equals("Occupied"))
             .toList();
-    }
-
-    private static void saveRoomsToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/rooms.csv"))) {
-            for (Room room : rooms) {
-                writer.write(room.getRoomID() + "," + room.getType() + "," + room.getStatus());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.err.println("Error saving rooms to file: " + e.getMessage());
-        }
-    }
-
-    private static void loadRoomsFromFile() {
-        File file = new File("data/rooms.csv");
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] data = line.split(",");
-                    rooms.add(new Room(data[0], data[1], data[2]));
-                }
-            } catch (IOException e) {
-                System.err.println("Error loading rooms from file: " + e.getMessage());
-            }
-        }
     }
 
     public List<Room> getAllRooms() {

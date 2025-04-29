@@ -9,42 +9,48 @@ import models.Patient;
 
 public final class PatientController implements ControllerInterface<Patient> {
     private final static List<Patient> patients = new ArrayList<>();
+    private final static PatientController instance = new PatientController();
 
     static {
-        loadPatientsFromFile();
+        instance.loadFromFile();
     }
 
     @Override
     public void saveToFile() {
-        savePatientsToFile();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/patients.csv"))) {
+            for (Patient patient : patients) {
+                writer.write(patient.getPersonID() + "," + patient.getName() + "," + patient.getAddress() + "," +
+                        patient.getPhoneNumber() + "," + patient.getGender() + "," + patient.getAge());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving patients to file: " + e.getMessage());
+        }
     }
 
     @Override
     public void loadFromFile() {
-        loadPatientsFromFile();
+        File file = new File("data/patients.csv");
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(",");
+                    patients.add(new Patient(data[0], data[1], data[2], data[3], data[4].charAt(0), Integer.parseInt(data[5])));
+                }
+            } catch (IOException e) {
+                System.err.println("Error loading patients from file: " + e.getMessage());
+            }
+        }
     }
 
     @Override
     public List<Patient> getAll() {
-        return getAllPatients();
+        return patients;
     }
     
     @Override
     public String generateUniqueID() {
-        return generateUniquePatientID();
-    }
-
-    public static boolean registerPatient(String name, String address, String phoneNumber, char gender, int age) {
-        String patientID = generateUniquePatientID();
-        Patient newPatient = new Patient(patientID, name, address, phoneNumber, gender, age);
-        
-        // Add to list and save
-        patients.add(newPatient);
-        savePatientsToFile();
-        return true;
-    }
-    
-    private static String generateUniquePatientID() {
         Random random = new Random();
         while (true) {
             int id = random.nextInt(10000); // Generates a number between(inclusive) 0 and 9999 
@@ -55,12 +61,22 @@ public final class PatientController implements ControllerInterface<Patient> {
         }
     }
 
+    public static boolean registerPatient(String name, String address, String phoneNumber, char gender, int age) {
+        String patientID = instance.generateUniqueID();
+        Patient newPatient = new Patient(patientID, name, address, phoneNumber, gender, age);
+        
+        // Add to list and save
+        patients.add(newPatient);
+        instance.saveToFile();
+        return true;
+    }
+
     /**
      * Displays all patients in a formatted 3-column grid with colored elements
      */
     public static void displayAllPatients() {
         patients.clear();
-        loadPatientsFromFile();
+        instance.loadFromFile();
         System.out.println("\n" + ColorCodes.BOLD + ColorCodes.BRIGHT_CYAN + "=== All Patients ===" + ColorCodes.RESET + "\n");
         
         if (patients.isEmpty()) {
@@ -247,7 +263,7 @@ public final class PatientController implements ControllerInterface<Patient> {
             patient.setPhoneNumber(phoneNumber);
             patient.setGender(gender);
             patient.setAge(age);
-            savePatientsToFile();
+            instance.saveToFile();
         } else {
             System.out.println("Patient not found.");
         }
@@ -256,7 +272,7 @@ public final class PatientController implements ControllerInterface<Patient> {
     public static boolean dischargePatient(String patientID) {
         boolean removed = patients.removeIf(patient -> patient.getPersonID().equals(patientID));
         if (removed) {
-            savePatientsToFile();
+            instance.saveToFile();
         }
         return removed;
     }
@@ -310,7 +326,7 @@ public final class PatientController implements ControllerInterface<Patient> {
                 if (details.containsKey("name")) patient.setName(details.get("name"));
                 if (details.containsKey("address")) patient.setAddress(details.get("address"));
                 if (details.containsKey("phoneNumber")) patient.setPhoneNumber(details.get("phoneNumber"));
-                savePatientsToFile();
+                instance.saveToFile();
             });
     }
 
@@ -319,37 +335,6 @@ public final class PatientController implements ControllerInterface<Patient> {
             .filter(patient -> patient.getPersonID().equals(patientID))
             .findFirst()
             .orElse(null);
-    }
-
-    private static void savePatientsToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/patients.csv"))) {
-            for (Patient patient : patients) {
-                writer.write(patient.getPersonID() + "," + patient.getName() + "," + patient.getAddress() + "," +
-                        patient.getPhoneNumber() + "," + patient.getGender() + "," + patient.getAge());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.err.println("Error saving patients to file: " + e.getMessage());
-        }
-    }
-
-    private static void loadPatientsFromFile() {
-        File file = new File("data/patients.csv");
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] data = line.split(",");
-                    patients.add(new Patient(data[0], data[1], data[2], data[3], data[4].charAt(0), Integer.parseInt(data[5])));
-                }
-            } catch (IOException e) {
-                System.err.println("Error loading patients from file: " + e.getMessage());
-            }
-        }
-    }
-
-    private static List<Patient> getAllPatients() {
-        return patients;
     }
 
     public static List<Patient> searchPatientsByName(String name) {

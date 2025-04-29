@@ -65,15 +65,15 @@ public class Main {
             int choice;
             while (true) {
                 System.out.print("Choose an option: ");
-                try {
-                    choice = Integer.parseInt(scanner.nextLine());
-                    if (choice >= 0 && choice <= 9) { // Valid choices are between 0 and 7 inclusive
-                        break;
-                    } else {
-                        System.out.println(StringUtils.beautify("Error: Choice must be between 0-9. Please try again.", BorderColor.RED));
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println(StringUtils.beautify("Error: Invalid input. Please enter a valid number.", BorderColor.RED));
+                choice = getIntegerInput();
+                if (choice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    continue;
+                }
+                if (choice >= 0 && choice <= 9) { // Valid choices are between 0 and 7 inclusive
+                    break;
+                } else {
+                    System.out.println(StringUtils.beautify("Error: Choice must be between 0-9. Please try again.", BorderColor.RED));
                 }
             }
 
@@ -122,18 +122,26 @@ public class Main {
             RoomController.displayAllRooms();
             System.out.println(StringConstants.ROOM_MENU);
             System.out.print("Choose an option (or enter 0 to go back): ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice = getIntegerInput();
+            if (choice == -1) {
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
 
             switch (choice) {
                 case 0 -> managingRooms = false; // Exit to main menu
                 case 1 -> {
+                    // add
                     while (true) {
                         clearScreen();
                         RoomController.displayAllRooms();
                         System.out.println(StringConstants.ROOM_TYPE_MENU);
                         System.out.print("Choose an option (or enter 0 to go back): ");
-                        int roomTypeChoice = scanner.nextInt();
+                        int roomTypeChoice = getIntegerInput();
+                        if (roomTypeChoice == -1) {
+                            scanner.nextLine(); // Clear invalid input
+                            continue;
+                        }
                         scanner.nextLine();
 
                         if (roomTypeChoice == 0) break; // Back to "Manage Rooms"
@@ -177,7 +185,11 @@ public class Main {
                     String roomID = scanner.nextLine();
                     if (roomID.equals("0")) continue; // Back to "Manage Rooms"
                     System.out.print("Assign new status:\n[1] Available\n[2] Occupied\nChoose an option (or enter 0 to cancel): ");
-                    int status = scanner.nextInt();
+                    int status = getIntegerInput();
+                    if (status == -1) {
+                        scanner.nextLine(); // Clear invalid input
+                        continue;
+                    }
                     if (status == 0) continue; // Back to "Manage Rooms"
                     switch (status) {
                         case 1 -> RoomController.updateRoomStatus(roomID, "available");
@@ -190,7 +202,10 @@ public class Main {
                     System.out.println(StringUtils.beautify("Room status updated successfully!"));
                     pause();
                 }
-                default -> System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
+                default -> {
+                    System.out.println(StringUtils.beautify("Invalid choice!", BorderColor.RED));
+                    pause();
+                }
             }
         }
     }
@@ -201,7 +216,11 @@ public class Main {
             clearScreen();
             System.out.println(StringConstants.PATIENT_MENU);
             System.out.print("Choose an option (or enter 0 to go back): ");
-            int choice = scanner.nextInt();
+            int choice = getIntegerInput();
+            if (choice == -1) {
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
             scanner.nextLine();
 
             switch (choice) {
@@ -318,7 +337,11 @@ public class Main {
             clearScreen();
             System.out.println(StringConstants.DOCTOR_MENU);
             System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
+            int choice = getIntegerInput();
+            if (choice == -1) {
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
             scanner.nextLine();
 
             switch (choice) {
@@ -619,7 +642,11 @@ public class Main {
             clearScreen();
             System.out.println(StringConstants.NURSE_MENU);
             System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
+            int choice = getIntegerInput();
+            if (choice == -1) {
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
             scanner.nextLine();
 
             switch (choice) {
@@ -888,7 +915,11 @@ public class Main {
             clearScreen();
             System.out.println(StringConstants.APPOINTMENT_MENU);
             System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
+            int choice = getIntegerInput();
+            if (choice == -1) {
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
             scanner.nextLine();
 
             switch(choice){
@@ -927,33 +958,32 @@ public class Main {
                     String status_pass = null;
                     while (true) {
                         System.out.print("Enter the new status (0 to cancel): ");
-                        try {
-                            int status = scanner.nextInt(); 
-                            scanner.nextLine(); // consume newline
-
-                            switch (status) {
-                                case 0 -> {
-                                    System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
-                                    continue; // Back to "Manage Appointments"
-                                }
-                                case 1 -> {
-                                    status_pass = "Scheduled";
-                                    break;
-                                }
-                                case 2 -> {
-                                    status_pass = "Active";
-                                    break;
-                                }
-                                default -> {
-                                    System.out.println("Invalid status choice! Please enter 0, 1 or 2");
-                                    continue;
-                                }
-                            }
-                            break; // Exit loop if valid input
-                        } catch (Exception e) {
-                            System.out.println("Invalid input! Please enter a number");
+                        int status = getIntegerInput(); 
+                        if (status == -1) {
                             scanner.nextLine(); // Clear invalid input
+                            continue;
                         }
+                        scanner.nextLine(); // consume newline
+
+                        switch (status) {
+                            case 0 -> {
+                                System.out.println(StringUtils.beautify("Operation canceled.", BorderColor.RED));
+                                continue; // Back to "Manage Appointments"
+                            }
+                            case 1 -> {
+                                status_pass = "Scheduled";
+                                break;
+                            }
+                            case 2 -> {
+                                status_pass = "Active";
+                                break;
+                            }
+                            default -> {
+                                System.out.println("Invalid status choice! Please enter 0, 1 or 2");
+                                continue;
+                            }
+                        }
+                        break; // Exit loop if valid input
                     }
 
                     if (status_pass != null) {
@@ -985,15 +1015,12 @@ public class Main {
             clearScreen();
             System.out.println(StringConstants.MEDICALRECORD_MENU);
             System.out.print("Choose an option: ");
-            int choice;
-            try {
-                choice = scanner.nextInt();
-                scanner.nextLine();
-            } catch (NumberFormatException e) {
-                System.out.println(StringUtils.beautify("Invalid input! Please enter a number.", BorderColor.RED));
+            int choice = getIntegerInput();
+            if (choice == -1) {
                 scanner.nextLine(); // Clear invalid input
                 continue;
             }
+            scanner.nextLine();
 
             switch (choice) {
                 case 0 -> showMainMenu(); // Back to Main Menu
@@ -1224,15 +1251,12 @@ public class Main {
             clearScreen();
             System.out.println(StringConstants.SEARCH_VIEW_MENU);
             System.out.print("Choose an option (0 to return to main menu): ");
-            int choice;
-            try {
-                choice = scanner.nextInt();
-                scanner.nextLine(); // consume newline
-            } catch (Exception e) {
-                System.out.println(StringUtils.beautify("Invalid input! Please enter a number.", BorderColor.RED));
-                scanner.nextLine();
+            int choice = getIntegerInput();
+            if (choice == -1) {
+                scanner.nextLine(); // Clear invalid input
                 continue;
             }
+            scanner.nextLine(); // consume newline
 
             switch (choice) {
                 case 0 -> {
@@ -1257,15 +1281,12 @@ public class Main {
             System.out.println(StringUtils.beautify("[1] Search by Name\n[2] Search by Address\n[3] Search by Gender\n[4] Search by Age Range\n[0] Back"));
 
             System.out.print("Choose search criteria: ");
-            int choice;
-            try {
-                choice = scanner.nextInt();
-                scanner.nextLine();
-            } catch (Exception e) {
-                System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
-                scanner.nextLine();
-                return;
+            int choice = getIntegerInput();
+            if (choice == -1) {
+                scanner.nextLine(); // Clear invalid input
+                continue;
             }
+            scanner.nextLine();
 
             switch (choice) {
                 case 0 -> {
@@ -1302,7 +1323,11 @@ public class Main {
                     System.out.println("[1] Male (M)");
                     System.out.println("[2] Female (F)");
                     System.out.print("Choice: ");
-                    int genderChoice = scanner.nextInt();
+                    int genderChoice = getIntegerInput();
+                    if (genderChoice == -1) {
+                        scanner.nextLine(); // Clear invalid input
+                        continue;
+                    }
                     scanner.nextLine();
                     
                     char gender = switch(genderChoice) {
@@ -1335,7 +1360,11 @@ public class Main {
                     System.out.println("[4] Middle-aged Adults (40-59)");
                     System.out.println("[5] Seniors (60+)");
                     System.out.print("Choice: ");
-                    int ageChoice = scanner.nextInt();
+                    int ageChoice = getIntegerInput();
+                    if (ageChoice == -1) {
+                        scanner.nextLine(); // Clear invalid input
+                        continue;
+                    }
                     scanner.nextLine();
                     
                     int[] ageRange = switch(ageChoice) {
@@ -1369,15 +1398,12 @@ public class Main {
         System.out.println(StringUtils.beautify("[1] Search by Name\n[2] Search by Department\n[3] Search by Gender\n[4] Search by Age Range\n[5] Search by Experience\n[6] Search by Shift\n[0] Back"));
 
         System.out.print("\nChoose search criteria: ");
-        int choice;
-        try {
-            choice = scanner.nextInt();
-            scanner.nextLine();
-        } catch (Exception e) {
-            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
-            scanner.nextLine();
+        int choice = getIntegerInput();
+        if (choice == -1) {
+            scanner.nextLine(); // Clear invalid input
             return;
         }
+        scanner.nextLine();
 
         switch (choice) {
             case 0 -> {
@@ -1404,7 +1430,12 @@ public class Main {
                 System.out.println("[4] Neurology");
                 System.out.println("[5] Orthopedics");
                 System.out.print("Choice: ");
-                int deptChoice = scanner.nextInt();
+                int deptChoice = getIntegerInput();
+                if (deptChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 String department = switch(deptChoice) {
@@ -1433,7 +1464,12 @@ public class Main {
                 System.out.println("[1] Male (M)");
                 System.out.println("[2] Female (F)");
                 System.out.print("Choice: ");
-                int genderChoice = scanner.nextInt();
+                int genderChoice = getIntegerInput();
+                if (genderChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 char gender = switch(genderChoice) {
@@ -1460,7 +1496,12 @@ public class Main {
                 System.out.println("[2] Middle-aged (36-50)");
                 System.out.println("[3] Senior (51+)");
                 System.out.print("Choice: ");
-                int ageChoice = scanner.nextInt();
+                int ageChoice = getIntegerInput();
+                if (ageChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 int[] ageRange = switch(ageChoice) {
@@ -1488,7 +1529,12 @@ public class Main {
                 System.out.println("[2] Intermediate (6-10 years)");
                 System.out.println("[3] Senior (11+ years)");
                 System.out.print("Choice: ");
-                int expChoice = scanner.nextInt();
+                int expChoice = getIntegerInput();
+                if (expChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 int experience = switch(expChoice) {
@@ -1515,7 +1561,12 @@ public class Main {
                 System.out.println("[1] Morning");
                 System.out.println("[2] Evening");
                 System.out.print("Choice: ");
-                int shiftChoice = scanner.nextInt();
+                int shiftChoice = getIntegerInput();
+                if (shiftChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 String shift = switch(shiftChoice) {
@@ -1545,15 +1596,12 @@ public class Main {
         System.out.println(StringUtils.beautify("[1] Search by Name\n[2] Search by Department\n[3] Search by Gender\n[4] Search by Age Range\n[5] Search by Experience\n[6] Search by Shift\n[0] Back"));
 
         System.out.print("\nChoose search criteria: ");
-        int choice;
-        try {
-            choice = scanner.nextInt();
-            scanner.nextLine();
-        } catch (Exception e) {
-            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
-            scanner.nextLine();
+        int choice = getIntegerInput();
+        if (choice == -1) {
+            scanner.nextLine(); // Clear invalid input
             return;
         }
+        scanner.nextLine();
 
         switch (choice) {
             case 0 -> {
@@ -1587,7 +1635,12 @@ public class Main {
                 System.out.println("[9] Endocrinology");
                 System.out.println("[10] Rheumatology");
                 System.out.print("Choice: ");
-                int deptChoice = scanner.nextInt();
+                int deptChoice = getIntegerInput();
+                if (deptChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                     
                 String department = switch(deptChoice) {
@@ -1623,7 +1676,12 @@ public class Main {
                 System.out.println("[1] Male (M)");
                 System.out.println("[2] Female (F)");
                 System.out.print("Choice: ");
-                int genderChoice = scanner.nextInt();
+                int genderChoice = getIntegerInput();
+                if (genderChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 char gender = switch(genderChoice) {
@@ -1651,7 +1709,12 @@ public class Main {
                 System.out.println("[2] Middle-aged (31-45)");
                 System.out.println("[3] Senior (46+)");
                 System.out.print("Choice: ");
-                int ageChoice = scanner.nextInt();
+                int ageChoice = getIntegerInput();
+                if (ageChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 int[] ageRange = switch(ageChoice) {
@@ -1679,7 +1742,12 @@ public class Main {
                 System.out.println("[2] Intermediate (4-7 years)");
                 System.out.println("[3] Senior (8+ years)");
                 System.out.print("Choice: ");
-                int expChoice = scanner.nextInt();
+                int expChoice = getIntegerInput();
+                if (expChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 int experience = switch(expChoice) {
@@ -1708,7 +1776,12 @@ public class Main {
                 System.out.println("[2] Evening");
                 System.out.println("[3] Night");
                 System.out.print("Choice: ");
-                int shiftChoice = scanner.nextInt();
+                int shiftChoice = getIntegerInput();
+                if (shiftChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 String shift = switch(shiftChoice) {
@@ -1740,15 +1813,12 @@ public class Main {
         System.out.println(StringUtils.beautify("[1] Search by status\n[2] Search by date\n[0] Back"));
 
         System.out.print("Choose search criteria: ");
-        int choice;
-        try {
-            choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline
-        } catch (Exception e) {
-            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
-            scanner.nextLine();
+        int choice = getIntegerInput();
+        if (choice == -1) {
+            scanner.nextLine(); // Clear invalid input
             return;
         }
+        scanner.nextLine(); // consume newline
 
         switch (choice) {
             case 0 -> {
@@ -1759,7 +1829,12 @@ public class Main {
                 System.out.println("[1] Active");
                 System.out.println("[2] Scheduled");
                 System.out.print("Choice: ");
-                int statusChoice = scanner.nextInt();
+                int statusChoice = getIntegerInput();
+                if (statusChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 String status = switch(statusChoice) {
@@ -1783,7 +1858,12 @@ public class Main {
                 System.out.println("[2] This Week");
                 System.out.println("[3] This Month");
                 System.out.print("Choice: ");
-                int dateChoice = scanner.nextInt();
+                int dateChoice = getIntegerInput();
+                if (dateChoice == -1) {
+                    scanner.nextLine(); // Clear invalid input
+                    pause();
+                    return;
+                }
                 scanner.nextLine();
                 
                 LocalDate today = LocalDate.now();
@@ -1828,15 +1908,12 @@ public class Main {
         System.out.println(StringUtils.beautify("[1] Search by room type\n[2] Search by status\n[0] Back"));
 
         System.out.print("Choose search criteria: ");
-        int choice;
-        try {
-            choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline
-        } catch (Exception e) {
-            System.out.println(StringUtils.beautify("Invalid input!", BorderColor.RED));
-            scanner.nextLine();
+        int choice = getIntegerInput();
+        if (choice == -1) {
+            scanner.nextLine(); // Clear invalid input
             return;
         }
+        scanner.nextLine(); // consume newline
 
         switch (choice) {
             case 0 -> {
@@ -1850,7 +1927,12 @@ public class Main {
             System.out.println("[4] Operation");
             System.out.println("[5] Isolation");
             System.out.print("Choice: ");
-            int roomChoice = scanner.nextInt();
+            int roomChoice = getIntegerInput();
+            if (roomChoice == -1) {
+                scanner.nextLine(); // Clear invalid input
+                pause();
+                return;
+            }
             scanner.nextLine();
             
             String roomType = switch(roomChoice) {
@@ -1876,7 +1958,12 @@ public class Main {
             System.out.println("[1] Available");
             System.out.println("[2] Occupied");
             System.out.print("Choice: ");
-            int statusChoice = scanner.nextInt();
+            int statusChoice = getIntegerInput();
+            if (statusChoice == -1) {
+                scanner.nextLine(); // Clear invalid input
+                pause();
+                return;
+            }
             scanner.nextLine();
             
             String status = switch(statusChoice) {
@@ -2120,6 +2207,18 @@ public class Main {
             }
             
             return input.trim();
+        }
+    }
+
+    // Get integer input with validation and error handling
+    private static int getIntegerInput() {
+        try {
+            String input = scanner.nextLine();
+            int value = Integer.parseInt(input);
+            return value;
+        } catch (NumberFormatException e) {
+            System.out.println(StringUtils.beautify("Error: Please enter a valid number. ONLY DIGITS ALLOWED HERE", BorderColor.RED));
+            return -1;
         }
     }
 

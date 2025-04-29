@@ -8,19 +8,49 @@ import models.Doctor;
 
 public final class DoctorController implements ControllerInterface<Doctor> {
     private final static List<Doctor> doctors = new ArrayList<>();
+    private final static DoctorController instance = new DoctorController();
     
     static  {
-        loadDoctorsFromFile();
+        instance.loadFromFile();
     }
 
     @Override
     public void saveToFile() {
-        saveDoctorsToFile();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/doctors.csv"))) {
+            for (Doctor doctor : doctors) {
+                writer.write(doctor.getPersonID() + "," + doctor.getName() + "," + doctor.getAddress() + "," +
+                        doctor.getPhoneNumber() + "," + doctor.getGender() + "," + doctor.getAge() + "," +
+                        doctor.getDepartment() + "," + doctor.getShift() + "," + doctor.getYearsOfExperience() + "," +
+                        doctor.getSpecialization());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving doctors to file: " + e.getMessage());
+        }
     }
 
     @Override
     public void loadFromFile() {
-        loadDoctorsFromFile();
+        File file = new File("data/doctors.csv");
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(",");
+                    // Ensure the data array has the expected number of elements
+                    if (data.length == 10) {
+                        doctors.add(new Doctor(data[0], data[1], data[2], data[3], data[4].charAt(0), Integer.parseInt(data[5]),
+                                data[6], data[7], Integer.parseInt(data[8]), data[9]));
+                    } else {
+                        System.err.println("Invalid data format in line: " + line);
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println("Error loading doctors from file: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.err.println("Error parsing number in file: " + e.getMessage());
+            }
+        }
     }
 
     // get all
@@ -32,15 +62,22 @@ public final class DoctorController implements ControllerInterface<Doctor> {
     
     @Override
     public String generateUniqueID() {
-        return generateUniquePersonID();
+        Random random = new Random();
+        while (true) {
+            int id = random.nextInt(10000); // Generates a number between(inclusive) 0 and 9999 
+            String candidate = "D" + String.format("%04d", id);
+            if (!doctors.stream().anyMatch(p -> p.getPersonID().equals(candidate))) {
+                return candidate;
+            }
+        }
     }
 
     public static boolean hireDoctor(String name, String address, String phoneNumber, char gender, int age, String department, String shift, int yearsOfExperience, String specialization) {
-        String personID = generateUniquePersonID();
+        String personID = instance.generateUniqueID();
         Doctor newDoctor = new Doctor(personID, name, address, phoneNumber, gender, age, department, shift, yearsOfExperience, specialization);
 
         doctors.add(newDoctor);
-        saveDoctorsToFile();
+        instance.saveToFile();
         return true;
     }
 
@@ -113,7 +150,7 @@ public final class DoctorController implements ControllerInterface<Doctor> {
             .findFirst()
             .ifPresent(doctor -> {
                 doctor.setSpecialization(specialization);
-                saveDoctorsToFile();
+                instance.saveToFile();
             });
     }
 
@@ -123,7 +160,7 @@ public final class DoctorController implements ControllerInterface<Doctor> {
             .findFirst()
             .ifPresent(doctor -> {
                 doctor.setDepartment(department);
-                saveDoctorsToFile();
+                instance.saveToFile();
             });
     }
 
@@ -133,7 +170,7 @@ public final class DoctorController implements ControllerInterface<Doctor> {
             .findFirst()
             .ifPresent(doctor -> {
                 doctor.setShift(shift);
-                saveDoctorsToFile();
+                instance.saveToFile();
             });
     }
 
@@ -143,26 +180,14 @@ public final class DoctorController implements ControllerInterface<Doctor> {
             .findFirst()
             .ifPresent(doctor -> {
                 doctor.setYearsOfExperience(yearsOfExperience);
-                saveDoctorsToFile();
+                instance.saveToFile();
             });
-    }
-
-    // OTHER METHODS
-    private static String generateUniquePersonID() {
-        Random random = new Random();
-        while (true) {
-            int id = random.nextInt(10000); // Generates a number between(inclusive) 0 and 9999 
-            String candidate = "D" + String.format("%04d", id);
-            if (!doctors.stream().anyMatch(p -> p.getPersonID().equals(candidate))) {
-                return candidate;
-            }
-        }
     }
 
     public static boolean removeDoctor(String doctorID) {
         boolean removed = doctors.removeIf(doctor -> doctor.getPersonID().equals(doctorID));
         if (removed) {
-            saveDoctorsToFile();
+            instance.saveToFile();
         }
         return removed;
     }
@@ -180,43 +205,5 @@ public final class DoctorController implements ControllerInterface<Doctor> {
     // Method to check whether the doctor exists
     public static boolean doctorExists(String doctorID) {
         return doctors.stream().anyMatch(doctor -> doctor.getPersonID().equals(doctorID));
-    }
-
-    // FILE IO HANDLING
-    private static void saveDoctorsToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/doctors.csv"))) {
-            for (Doctor doctor : doctors) {
-                writer.write(doctor.getPersonID() + "," + doctor.getName() + "," + doctor.getAddress() + "," +
-                        doctor.getPhoneNumber() + "," + doctor.getGender() + "," + doctor.getAge() + "," +
-                        doctor.getDepartment() + "," + doctor.getShift() + "," + doctor.getYearsOfExperience() + "," +
-                        doctor.getSpecialization());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.err.println("Error saving doctors to file: " + e.getMessage());
-        }
-    }
-
-    private static void loadDoctorsFromFile() {
-        File file = new File("data/doctors.csv");
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] data = line.split(",");
-                    // Ensure the data array has the expected number of elements
-                    if (data.length == 10) {
-                        doctors.add(new Doctor(data[0], data[1], data[2], data[3], data[4].charAt(0), Integer.parseInt(data[5]),
-                                data[6], data[7], Integer.parseInt(data[8]), data[9]));
-                    } else {
-                        System.err.println("Invalid data format in line: " + line);
-                    }
-                }
-            } catch (IOException e) {
-                System.err.println("Error loading doctors from file: " + e.getMessage());
-            } catch (NumberFormatException e) {
-                System.err.println("Error parsing number in file: " + e.getMessage());
-            }
-        }
     }
 }

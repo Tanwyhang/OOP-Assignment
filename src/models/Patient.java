@@ -12,62 +12,6 @@ public class Patient extends Person {
         this.medicalHistory = new ArrayList<>();
     }
 
-    // Implement abstract methods
-    @Override
-    public String getPersonID() {
-        return personID;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getAddress() {
-        return address;
-    }
-
-    @Override
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Override
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    @Override
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public char getGender() {
-        return gender;
-    }
-
-    @Override
-    public void setGender(char gender) {
-        this.gender = gender;
-    }
-
-    @Override
-    public int getAge() {
-        return age;
-    }
-
-    @Override
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

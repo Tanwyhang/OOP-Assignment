@@ -1,6 +1,6 @@
 package models;
 
-abstract class Person {
+public class Person {
     protected final String personID;
     protected String name;
     protected String address;
@@ -30,20 +30,52 @@ abstract class Person {
         this.age = age;
     }
 
-    // Abstract Getters and Setters
-    public abstract String getPersonID();
-    public abstract String getName();
-    public abstract void setName(String name);
-    public abstract String getAddress();
-    public abstract void setAddress(String address);
-    public abstract String getPhoneNumber();
-    public abstract void setPhoneNumber(String phoneNumber);
-    public abstract char getGender();
-    public abstract void setGender(char gender);
-    public abstract int getAge();
-    public abstract void setAge(int age);
-    
-    // abstract toString method
-    @Override
-    public abstract String toString();
+    // Getters and Setters
+    public String getPersonID() {
+        return personID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        if (gender == 'M' || gender == 'F') {
+            this.gender = gender;
+        } else {
+            throw new IllegalArgumentException("Invalid gender: " + gender);
+        }
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 }

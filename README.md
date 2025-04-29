@@ -16,6 +16,11 @@ A comprehensive Java-based Hospital Management System with a console interface. 
 
 ## How to Use
 
+To run the app, just go to the src folder which contains a driver class "Main.java"
+do:
+- javac Main.java
+- java Main
+
 1. Run the application (compile or use an extension in vscode)
 2. Log in with admin credentials
 3. Navigate through the main menu to access different modules:

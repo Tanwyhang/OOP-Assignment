@@ -16,3 +16,6 @@ R20,Operation,Occupied
 R78,Ward,Available
 R12,Emergency,Available
 R91,Operation,Available
+R60,ICU,Available
+R41,ICU,Available
+R46,ICU,Available
