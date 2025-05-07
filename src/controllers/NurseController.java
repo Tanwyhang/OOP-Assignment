@@ -186,3 +186,4 @@ public final class NurseController implements ControllerInterface<Nurse> {
         return nurses.stream().anyMatch(nurse -> nurse.getPersonID().equals(nurseID));
     }
 }
+    
