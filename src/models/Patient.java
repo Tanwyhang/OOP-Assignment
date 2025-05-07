@@ -16,12 +16,12 @@ public class Patient extends Person {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Patient Details:\n");
-        sb.append(String.format("%-15s: %s\n", "Person ID", personID));
-        sb.append(String.format("%-15s: %s\n", "Name", name));
-        sb.append(String.format("%-15s: %s\n", "Address", address));
-        sb.append(String.format("%-15s: %s\n", "Phone Number", phoneNumber));
-        sb.append(String.format("%-15s: %c\n", "Gender", gender));
-        sb.append(String.format("%-15s: %d\n", "Age", age));
+        sb.append(String.format("%-15s: %s\n", "Person ID", getPersonID()));
+        sb.append(String.format("%-15s: %s\n", "Name", getName()));
+        sb.append(String.format("%-15s: %s\n", "Address", getAddress()));
+        sb.append(String.format("%-15s: %s\n", "Phone Number", getPhoneNumber()));
+        sb.append(String.format("%-15s: %c\n", "Gender", getGender()));
+        sb.append(String.format("%-15s: %d\n", "Age", getAge()));
         
         String output = sb.toString();
         return StringUtils.beautify(output);

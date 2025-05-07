@@ -1,12 +1,12 @@
 package models;
 
 public class Person {
-    protected final String personID;
-    protected String name;
-    protected String address;
-    protected String phoneNumber;
-    protected char gender;
-    protected int age;
+    private final String personID;
+    private String name;
+    private String address;
+    private String phoneNumber;
+    private char gender;
+    private int age;
 
     public Person() {
         this.personID = "";

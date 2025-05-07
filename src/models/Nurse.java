@@ -16,17 +16,17 @@ public class Nurse extends Staff {
     @Override
     public String toString() {
         return StringUtils.beautify(String.format("""
-                               ID         : %s
-                               Name       : %s
-                               Address    : %s
-                               Phone      : %s
-                               Gender     : %c
-                               Age        : %d
-                               Department : %s
-                               Shift      : %s
-                               Experience : %d years""",
-            personID, name, address, phoneNumber, gender, age,
-            department, shift, yearsOfExperience
+                       ID         : %s
+                       Name       : %s
+                       Address    : %s
+                       Phone      : %s
+                       Gender     : %c
+                       Age        : %d
+                       Department : %s
+                       Shift      : %s
+                       Experience : %d years""",
+            getPersonID(), getName(), getAddress(), getPhoneNumber(), getGender(), getAge(),
+            getDepartment(), getShift(), getYearsOfExperience()
         ));
     }
 }

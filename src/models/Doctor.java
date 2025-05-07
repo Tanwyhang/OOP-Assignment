@@ -20,18 +20,18 @@ public class Doctor extends Staff {
     @Override
     public String toString() {
         return StringUtils.beautify(String.format("""
-                               ID             : %s
-                               Name           : %s
-                               Address        : %s
-                               Phone          : %s
-                               Gender         : %c
-                               Age            : %d
-                               Department     : %s
-                               Shift          : %s
-                               Experience     : %d years
-                               Specialization : %s""",
-            personID, name, address, phoneNumber, gender, age,
-            department, shift, yearsOfExperience, specialization
+                       ID             : %s
+                       Name           : %s
+                       Address        : %s
+                       Phone          : %s
+                       Gender         : %c
+                       Age            : %d
+                       Department     : %s
+                       Shift          : %s
+                       Experience     : %d years
+                       Specialization : %s""",
+            getPersonID(), getName(), getAddress(), getPhoneNumber(), getGender(), getAge(),
+            getDepartment(), getShift(), getYearsOfExperience(), getSpecialization()
         ));
     }
 }

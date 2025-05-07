@@ -3,9 +3,9 @@ package models;
 import utils.StringUtils;
 
 public class Staff extends Person {
-    protected String department;
-    protected String shift;
-    protected int yearsOfExperience;
+    private String department;
+    private String shift;
+    private int yearsOfExperience;
 
     public Staff() {}
 
@@ -23,12 +23,12 @@ public class Staff extends Person {
         StringBuilder sb = new StringBuilder();
         sb.append("Staff Details:\n");
         // have even spacing for :
-        sb.append(String.format("%-15s: %s\n", "Person ID", personID));
-        sb.append(String.format("%-15s: %s\n", "Name", name));
-        sb.append(String.format("%-15s: %s\n", "Address", address));
-        sb.append(String.format("%-15s: %s\n", "Phone Number", phoneNumber));
-        sb.append(String.format("%-15s: %c\n", "Gender", gender));
-        sb.append(String.format("%-15s: %d\n", "Age", age));
+        sb.append(String.format("%-15s: %s\n", "Person ID", this.getPersonID()));
+        sb.append(String.format("%-15s: %s\n", "Name", this.getName()));
+        sb.append(String.format("%-15s: %s\n", "Address", this.getAddress()));
+        sb.append(String.format("%-15s: %s\n", "Phone Number", this.getPhoneNumber()));
+        sb.append(String.format("%-15s: %c\n", "Gender", this.getGender()));
+        sb.append(String.format("%-15s: %d\n", "Age", this.getAge()));
         sb.append(String.format("%-15s: %s\n", "Department", department));
         sb.append(String.format("%-15s: %s\n", "Shift", shift));
         sb.append(String.format("%-15s: %d\n", "Experience", yearsOfExperience));
